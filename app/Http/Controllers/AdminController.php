@@ -122,4 +122,31 @@ class AdminController extends Controller
 
         return redirect()->route('admin.tenants')->with('success', "Tenant '{$tenant->name}' created!");
     }
+
+    public function domains()
+    {
+        $withSubdomain = Tenant::whereNotNull('subdomain')->orderBy('name')->get();
+        $withCustom    = Tenant::whereNotNull('custom_domain')->orderBy('name')->get();
+        $pending       = Tenant::where('domain_status', 'pending')->get();
+        $failed        = Tenant::where('domain_status', 'failed')->get();
+
+        return view('admin.domains', compact('withSubdomain', 'withCustom', 'pending', 'failed'));
+    }
+
+    public function approveDomain(Request $request, Tenant $tenant)
+    {
+        $tenant->update(['domain_status' => 'active', 'domain_verified_at' => now()]);
+        return back()->with('success', "Domain for {$tenant->name} manually approved.");
+    }
+
+    public function revokeDomain(Request $request, Tenant $tenant)
+    {
+        $tenant->update([
+            'custom_domain' => null,
+            'domain_status' => 'inactive',
+            'domain_txt_record' => null,
+            'domain_verified_at' => null,
+        ]);
+        return back()->with('success', "Domain for {$tenant->name} revoked.");
+    }
 }

@@ -11,6 +11,36 @@ A world-class, enterprise-grade multitenant CRM platform built with Laravel 12 (
 - First login shows a 5-step onboarding walkthrough modal (auto-dismissed, stored in `users.onboarding_completed_at`)
 - "Restart Tour" available in the user avatar dropdown menu
 
+## Subdomain & Custom Domain Provisioning (`/settings/domain`)
+- **Subdomain** (Starter+): claim `yourname.app-host.com` — instant, no DNS needed
+- **Custom Domain** (Pro+): connect `crm.yourcompany.com` with DNS TXT record verification
+- **DNS Verification**: generates `_crm-verify` TXT token, polls DNS via `dns_get_record()`, stores `domain_verified_at`
+- **SMTP / Email Settings**: per-tenant SMTP config (host, port, user, pass, from name/email, encryption)
+- **Admin Domain Panel** (`/admin/domains`): view all subdomains + custom domains, force-approve or revoke any domain
+- Plan gates: `canUseSubdomain()` = starter+, `canUseCustomDomain()` = pro+
+- `Tenant::portalUrl()` returns active URL; `domainBadgeLabel()` for UI display
+- `ResolveTenantByDomain` middleware on every request: maps custom domain / subdomain to a Tenant instance
+
+## REST API (`/api/v1/*` — authenticated via Bearer token)
+- **Auth**: `Authorization: Bearer {client_secret}` (from Developer App)
+- **Rate limiting**: 120 req/min per token, enforced via Laravel `RateLimiter`
+- **Endpoints**: Contacts (full CRUD), Companies (CRUD), Leads (CRUD), Deals (CRUD), Products (CRUD), Invoices (read), `/me`, `/ping`
+- All requests auto-logged to `api_logs` table (method, endpoint, status, response time, IP)
+- **Middleware**: `ApiAuthenticate` validates token, checks `is_active`, enforces IP whitelist
+
+## Audit Log (`/audit-log` — plugin: `audit_log`)
+- Real implementation replacing stub — `AuditLog` model + migration
+- Filterable by user, event type, date range
+- Stats: events today, this week, all time, active users today
+- Expandable rows show old/new values as JSON diff, HTTP method + URL
+- `AuditLog::record($event, $model, $old, $new)` static helper for logging anywhere
+
+## Production Hardening
+- **Security Headers**: `X-Content-Type-Options`, `X-Frame-Options`, `X-XSS-Protection`, `Referrer-Policy`, `Permissions-Policy`, HSTS (on HTTPS) via `SecurityHeaders` middleware
+- **Custom Error Pages**: styled dark-theme pages for 403, 404, 419, 500
+- **Rate Limiter**: `api` limiter defined in `AppServiceProvider` (120 req/min)
+- **Email Log table** (`email_logs`): tracks sent emails per tenant with status, error, related record
+
 ## Developer Portal (`/developer` — Enterprise plugin: `api_access`)
 - **Hub** `/developer` — live stats (API calls, errors, webhooks), 7-day traffic chart, recent request log, app list
 - **Applications** `/developer/apps` — CRUD for API apps with auto-generated `client_id` / `client_secret`

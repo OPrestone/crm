@@ -43,6 +43,9 @@
         <a href="{{ route('admin.plugins.index') }}" class="nav-item-link {{ request()->routeIs('admin.plugins*') ? 'active' : '' }}">
             <span class="nav-icon"><i class="bi bi-puzzle-fill"></i></span>Plugins
         </a>
+        <a href="{{ route('admin.domains') }}" class="nav-item-link {{ request()->routeIs('admin.domains*') || request()->routeIs('admin.domain.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-globe"></i></span>Domains
+        </a>
 
         @else
         {{-- Tenant sidebar (plugin-gated) --}}
@@ -238,8 +241,11 @@
         @endif
 
         @if($has('settings') && auth()->user()->isTenantAdmin())
-        <a href="{{ route('settings.index') }}" class="nav-item-link {{ request()->routeIs('settings.*') ? 'active' : '' }}">
+        <a href="{{ route('settings.index') }}" class="nav-item-link {{ request()->routeIs('settings.index') || request()->routeIs('settings.updateTenant') ? 'active' : '' }}">
             <span class="nav-icon"><i class="bi bi-gear-fill"></i></span>Settings
+        </a>
+        <a href="{{ route('settings.domain.index') }}" class="nav-item-link {{ request()->routeIs('settings.domain.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-globe"></i></span>Domain & Email
         </a>
         @endif
 

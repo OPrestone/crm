@@ -4,17 +4,19 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminPluginController;
 use App\Http\Controllers\AiController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\AuditController;
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DealController;
+use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\DomainController;
 use App\Http\Controllers\GoalController;
 use App\Http\Controllers\IdVerificationController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LeadController;
-use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\MarketingController;
 use App\Http\Controllers\ModuleStubController;
 use App\Http\Controllers\NotificationController;
@@ -166,6 +168,15 @@ Route::middleware('auth')->group(function () {
         Route::delete('/settings/users/{user}', [SettingsController::class, 'destroyUser'])->name('settings.destroyUser');
         Route::post('/settings/stages', [SettingsController::class, 'storeStage'])->name('settings.storeStage');
         Route::delete('/settings/stages/{stage}', [SettingsController::class, 'destroyStage'])->name('settings.destroyStage');
+
+        // Domain & Email settings
+        Route::get('/settings/domain', [DomainController::class, 'index'])->name('settings.domain.index');
+        Route::post('/settings/domain/subdomain', [DomainController::class, 'claimSubdomain'])->name('settings.domain.subdomain');
+        Route::delete('/settings/domain/subdomain', [DomainController::class, 'removeSubdomain'])->name('settings.domain.subdomain.remove');
+        Route::post('/settings/domain/custom', [DomainController::class, 'requestCustomDomain'])->name('settings.domain.custom');
+        Route::post('/settings/domain/custom/verify', [DomainController::class, 'verifyCustomDomain'])->name('settings.domain.custom.verify');
+        Route::delete('/settings/domain/custom', [DomainController::class, 'removeCustomDomain'])->name('settings.domain.custom.remove');
+        Route::post('/settings/domain/smtp', [DomainController::class, 'updateSmtp'])->name('settings.domain.smtp');
     });
 
     // Notifications
@@ -182,7 +193,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('plugin:forecasting')->get('/forecasting', [ModuleStubController::class, 'show'])->defaults('module', 'forecasting')->name('forecasting.index');
     Route::middleware('plugin:commissions')->get('/commissions', [ModuleStubController::class, 'show'])->defaults('module', 'commissions')->name('commissions.index');
     Route::middleware('plugin:territories')->get('/territories', [ModuleStubController::class, 'show'])->defaults('module', 'territories')->name('territories.index');
-    Route::middleware('plugin:audit_log')->get('/audit-log', [ModuleStubController::class, 'show'])->defaults('module', 'audit_log')->name('audit_log.index');
+    Route::middleware('plugin:audit_log')->get('/audit-log', [AuditController::class, 'index'])->name('audit_log.index');
     // Developer Portal (replaces stub)
     Route::middleware('plugin:api_access')->prefix('developer')->name('developer.')->group(function () {
         Route::get('/',                    [DeveloperController::class, 'index'])->name('index');
@@ -228,5 +239,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/tenants/{tenant}/plugins', [AdminPluginController::class, 'tenantPlugins'])->name('plugins.tenant');
         Route::post('/tenants/{tenant}/plugins/{plugin}/toggle', [AdminPluginController::class, 'toggle'])->name('plugins.toggle');
         Route::post('/tenants/{tenant}/plugins/plan', [AdminPluginController::class, 'bulkApplyPlan'])->name('plugins.plan');
+
+        // Domain Management
+        Route::get('/domains', [AdminController::class, 'domains'])->name('domains');
+        Route::post('/tenants/{tenant}/domain/approve', [AdminController::class, 'approveDomain'])->name('domain.approve');
+        Route::post('/tenants/{tenant}/domain/revoke', [AdminController::class, 'revokeDomain'])->name('domain.revoke');
     });
 });

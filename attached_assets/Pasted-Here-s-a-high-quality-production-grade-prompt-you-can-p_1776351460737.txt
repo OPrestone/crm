@@ -1,0 +1,261 @@
+Here’s a **high-quality, production-grade prompt** you can paste directly into Replit AI (or any code-gen system). It’s structured to force architecture discipline, Laravel best practices, and enterprise CRM completeness.
+
+---
+
+## 🔧 REPLIT AI PROMPT: Build a Multitenant Laravel CRM Platform
+
+**Prompt:**
+
+Build a **world-class, enterprise-grade, multitenant CRM platform** using **PHP (Laravel latest stable version)** with a modular, scalable architecture.
+
+---
+
+### 🧱 CORE ARCHITECTURE REQUIREMENTS
+
+* Framework: **Laravel (latest version)**
+* Architecture: **MVC strictly enforced**
+
+  * All database queries MUST be inside **Controllers or Service Classes (no queries in Blade views)**
+* Multitenancy:
+
+  * Support **database-per-tenant OR schema-based tenancy**
+  * Tenant isolation and secure data separation
+  * Tenant onboarding (signup → auto provisioning)
+* Authentication:
+
+  * Laravel Breeze or Jetstream (customized)
+  * Role-Based Access Control (RBAC)
+  * Permissions system (fine-grained access levels)
+* API:
+
+  * RESTful API support (for mobile/external integrations)
+* Frontend:
+
+  * Blade + Bootstrap (or Tailwind if needed)
+  * All **CSS and JS must be stored in `/public/assets`**
+  * No inline CSS/JS except minimal dynamic cases
+
+---
+
+### ⚡ PERFORMANCE & OPTIMIZATION
+
+* Implement:
+
+  * Query optimization (Eloquent relationships, eager loading)
+  * **Lazy loading** for heavy datasets (pagination, infinite scroll)
+  * **Caching system** (Redis or file cache fallback)
+
+    * Cache frequently accessed data (users, dashboards, reports)
+  * Queue system for background jobs (emails, notifications)
+* Use:
+
+  * Laravel Jobs, Events, Listeners
+  * Rate limiting for APIs
+
+---
+
+### 👥 USER & ACCESS MANAGEMENT
+
+* Multi-role system:
+
+  * Super Admin (platform owner)
+  * Tenant Admin
+  * Managers
+  * Staff/Agents
+* Permissions:
+
+  * Create, Read, Update, Delete per module
+  * Feature-level toggling per tenant
+* Activity logs (audit trail)
+
+---
+
+### 🧑‍💼 CRM CORE FEATURES
+
+#### 1. Contacts & Leads
+
+* Lead capture forms
+* Lead scoring
+* Lead pipeline tracking (Kanban style)
+* Contact segmentation
+* Import/export (CSV, Excel)
+
+#### 2. Accounts/Companies
+
+* Company profiles
+* Associated contacts
+* Deal tracking per company
+
+#### 3. Deals & Sales Pipeline
+
+* Customizable pipelines
+* Stages (drag & drop UI)
+* Deal forecasting
+* Revenue tracking
+
+#### 4. Tasks & Activities
+
+* Task assignment
+* Reminders & deadlines
+* Calendar integration
+
+#### 5. Communication
+
+* Email integration (SMTP, Gmail API)
+* SMS integration (Africa's Talking, Twilio)
+* Internal messaging system
+
+---
+
+### 💳 CARD GENERATOR SYSTEM (Like CardExchange®)
+
+Build a **card design and generation platform** inside the CRM:
+
+* Drag-and-drop card designer:
+
+  * Add text, images, QR codes, barcodes
+* Template system:
+
+  * Save reusable card templates
+* Dynamic fields:
+
+  * Auto-fill from CRM data (name, company, ID, etc.)
+* Export options:
+
+  * PDF, PNG
+* Batch card generation
+* Print-ready layouts
+
+---
+
+### 🧾 INVOICING & PAYMENTS
+
+* Invoice generation
+* Payment tracking
+* Integration with:
+
+  * Stripe
+  * PayPal
+  * Local payments (e.g., M-Pesa APIs)
+* Subscription billing for tenants
+
+---
+
+### 📊 REPORTING & ANALYTICS
+
+* Dashboard with widgets:
+
+  * Sales metrics
+  * Lead conversion rates
+* Custom reports
+* Export reports (PDF, Excel)
+* Charts (Chart.js or similar)
+
+---
+
+### 🤝 COLLABORATION FEATURES
+
+* Multi-user workspace per tenant
+* Notes/comments on deals and contacts
+* Shared dashboards
+* File uploads and sharing
+* Real-time notifications (WebSockets optional)
+
+---
+
+### 🔗 THIRD-PARTY INTEGRATIONS
+
+#### Required Integrations:
+
+* Google:
+
+  * Google OAuth (social login)
+  * Google Calendar sync
+  * Google Analytics
+* Social login:
+
+  * Google, Facebook, LinkedIn
+* Webhooks system for external apps
+* Zapier-like integration readiness
+
+---
+
+### 🔐 SECURITY
+
+* CSRF protection
+* XSS & SQL injection prevention
+* Tenant data isolation enforcement
+* Encrypted sensitive data
+* Login throttling
+* 2FA (optional)
+
+---
+
+### 🧰 ADMIN PANEL (SUPER ADMIN)
+
+* Manage tenants
+* View platform analytics
+* Subscription plans management
+* Feature toggles per tenant
+* System logs
+
+---
+
+### 🎨 UI/UX REQUIREMENTS
+
+* Clean, modern SaaS dashboard design
+* Fully responsive
+* Sidebar navigation + topbar
+* Dark mode support
+* Reusable components
+
+---
+
+### 📁 PROJECT STRUCTURE RULES
+
+* Controllers handle:
+
+  * Business logic
+  * Queries
+* Models:
+
+  * Relationships only
+* Views:
+
+  * Presentation only (NO logic)
+* Assets:
+
+  * `/public/assets/css`
+  * `/public/assets/js`
+  * `/public/assets/images`
+
+---
+
+### 🚀 BONUS FEATURES (IMPORTANT)
+
+* Notification system (email + in-app)
+* Multi-language support
+* Backup & restore system
+* System settings per tenant
+* Feature flags
+* API tokens for integrations
+
+---
+
+### 🧪 TESTING
+
+* Unit tests for core modules
+* Feature tests for:
+
+  * Authentication
+  * CRM workflows
+
+---
+
+### 📦 DELIVERY REQUIREMENTS
+
+* Fully working Laravel project
+* Database migrations & seeders
+* Sample demo data
+* Clear setup instructions
+Also allow all configs to be managed from the admin panel

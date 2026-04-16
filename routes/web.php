@@ -18,8 +18,14 @@ use App\Http\Controllers\IdVerificationController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\MarketingController;
+use App\Http\Controllers\CommissionController;
+use App\Http\Controllers\ContractController;
+use App\Http\Controllers\EmailCampaignController;
+use App\Http\Controllers\ForecastingController;
 use App\Http\Controllers\ModuleStubController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\TerritoryController;
+use App\Http\Controllers\WebFormController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -34,6 +40,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/pricing', [MarketingController::class, 'pricing'])->name('pricing');
 Route::get('/how-to', [MarketingController::class, 'howTo'])->name('how-to');
 Route::post('/contact-sales', [MarketingController::class, 'contactSales'])->name('contact.sales');
+
+// Public web form embed routes (no auth required)
+Route::get('/forms/{webForm}', [WebFormController::class, 'publicShow'])->name('web_forms.public');
+Route::post('/forms/{webForm}', [WebFormController::class, 'publicSubmit'])->name('web_forms.public.submit');
 
 Route::get('/', function () {
     if (!auth()->check()) return redirect()->route('pricing');
@@ -187,13 +197,81 @@ Route::middleware('auth')->group(function () {
         Route::post('/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
     });
 
-    // ── Coming-soon stub modules (Pro / Enterprise) ───────────────────────────
-    Route::middleware('plugin:email_campaigns')->get('/email-campaigns', [ModuleStubController::class, 'show'])->defaults('module', 'email_campaigns')->name('email_campaigns.index');
-    Route::middleware('plugin:web_forms')->get('/web-forms', [ModuleStubController::class, 'show'])->defaults('module', 'web_forms')->name('web_forms.index');
-    Route::middleware('plugin:contracts')->get('/contracts', [ModuleStubController::class, 'show'])->defaults('module', 'contracts')->name('contracts.index');
-    Route::middleware('plugin:forecasting')->get('/forecasting', [ModuleStubController::class, 'show'])->defaults('module', 'forecasting')->name('forecasting.index');
-    Route::middleware('plugin:commissions')->get('/commissions', [ModuleStubController::class, 'show'])->defaults('module', 'commissions')->name('commissions.index');
-    Route::middleware('plugin:territories')->get('/territories', [ModuleStubController::class, 'show'])->defaults('module', 'territories')->name('territories.index');
+    // ── Email Campaigns (Pro) ─────────────────────────────────────────────────
+    Route::middleware('plugin:email_campaigns')->prefix('email-campaigns')->name('email_campaigns.')->group(function () {
+        Route::get('/',                  [EmailCampaignController::class, 'index'])->name('index');
+        Route::get('/create',            [EmailCampaignController::class, 'create'])->name('create');
+        Route::post('/',                 [EmailCampaignController::class, 'store'])->name('store');
+        Route::get('/{emailCampaign}',   [EmailCampaignController::class, 'show'])->name('show');
+        Route::get('/{emailCampaign}/edit', [EmailCampaignController::class, 'edit'])->name('edit');
+        Route::put('/{emailCampaign}',   [EmailCampaignController::class, 'update'])->name('update');
+        Route::post('/{emailCampaign}/send',      [EmailCampaignController::class, 'send'])->name('send');
+        Route::post('/{emailCampaign}/duplicate', [EmailCampaignController::class, 'duplicate'])->name('duplicate');
+        Route::delete('/{emailCampaign}', [EmailCampaignController::class, 'destroy'])->name('destroy');
+    });
+
+    // ── Web Forms (Pro) ───────────────────────────────────────────────────────
+    Route::middleware('plugin:web_forms')->prefix('web-forms')->name('web_forms.')->group(function () {
+        Route::get('/',               [WebFormController::class, 'index'])->name('index');
+        Route::get('/create',         [WebFormController::class, 'create'])->name('create');
+        Route::post('/',              [WebFormController::class, 'store'])->name('store');
+        Route::get('/{webForm}',      [WebFormController::class, 'show'])->name('show');
+        Route::get('/{webForm}/edit', [WebFormController::class, 'edit'])->name('edit');
+        Route::put('/{webForm}',      [WebFormController::class, 'update'])->name('update');
+        Route::delete('/{webForm}',   [WebFormController::class, 'destroy'])->name('destroy');
+        Route::get('/{webForm}/submissions/{submission}', [WebFormController::class, 'viewSubmission'])->name('submission');
+    });
+
+    // ── Contracts (Pro) ───────────────────────────────────────────────────────
+    Route::middleware('plugin:contracts')->prefix('contracts')->name('contracts.')->group(function () {
+        Route::get('/',                          [ContractController::class, 'index'])->name('index');
+        Route::get('/create',                    [ContractController::class, 'create'])->name('create');
+        Route::post('/',                         [ContractController::class, 'store'])->name('store');
+        Route::get('/templates',                 [ContractController::class, 'templates'])->name('templates');
+        Route::get('/templates/create',          [ContractController::class, 'templateCreate'])->name('templates.create');
+        Route::post('/templates',                [ContractController::class, 'templateStore'])->name('templates.store');
+        Route::get('/templates/{template}/edit', [ContractController::class, 'templateEdit'])->name('templates.edit');
+        Route::put('/templates/{template}',      [ContractController::class, 'templateUpdate'])->name('templates.update');
+        Route::delete('/templates/{template}',   [ContractController::class, 'templateDestroy'])->name('templates.destroy');
+        Route::get('/templates/{template}/content', [ContractController::class, 'templateContent'])->name('template.content');
+        Route::get('/{contract}',                [ContractController::class, 'show'])->name('show');
+        Route::get('/{contract}/edit',           [ContractController::class, 'edit'])->name('edit');
+        Route::put('/{contract}',                [ContractController::class, 'update'])->name('update');
+        Route::delete('/{contract}',             [ContractController::class, 'destroy'])->name('destroy');
+        Route::get('/{contract}/pdf',            [ContractController::class, 'pdf'])->name('pdf');
+    });
+
+    // ── Sales Forecasting (Pro) ───────────────────────────────────────────────
+    Route::middleware('plugin:forecasting')->prefix('forecasting')->name('forecasting.')->group(function () {
+        Route::get('/',      [ForecastingController::class, 'index'])->name('index');
+        Route::post('/quota',[ForecastingController::class, 'setQuota'])->name('quota');
+    });
+
+    // ── Commission Tracking (Enterprise) ──────────────────────────────────────
+    Route::middleware('plugin:commissions')->prefix('commissions')->name('commissions.')->group(function () {
+        Route::get('/',                      [CommissionController::class, 'index'])->name('index');
+        Route::post('/calculate',            [CommissionController::class, 'calculate'])->name('calculate');
+        Route::post('/{commission}/approve', [CommissionController::class, 'approve'])->name('approve');
+        Route::post('/{commission}/pay',     [CommissionController::class, 'markPaid'])->name('pay');
+        Route::delete('/{commission}',       [CommissionController::class, 'destroy'])->name('destroy');
+        Route::get('/plans',                 [CommissionController::class, 'plans'])->name('plans');
+        Route::get('/plans/create',          [CommissionController::class, 'planCreate'])->name('plans.create');
+        Route::post('/plans',                [CommissionController::class, 'planStore'])->name('plans.store');
+        Route::get('/plans/{plan}/edit',     [CommissionController::class, 'planEdit'])->name('plans.edit');
+        Route::put('/plans/{plan}',          [CommissionController::class, 'planUpdate'])->name('plans.update');
+        Route::delete('/plans/{plan}',       [CommissionController::class, 'planDestroy'])->name('plans.destroy');
+    });
+
+    // ── Territory Management (Enterprise) ─────────────────────────────────────
+    Route::middleware('plugin:territories')->prefix('territories')->name('territories.')->group(function () {
+        Route::get('/',                [TerritoryController::class, 'index'])->name('index');
+        Route::get('/create',          [TerritoryController::class, 'create'])->name('create');
+        Route::post('/',               [TerritoryController::class, 'store'])->name('store');
+        Route::get('/{territory}',     [TerritoryController::class, 'show'])->name('show');
+        Route::get('/{territory}/edit',[TerritoryController::class, 'edit'])->name('edit');
+        Route::put('/{territory}',     [TerritoryController::class, 'update'])->name('update');
+        Route::delete('/{territory}',  [TerritoryController::class, 'destroy'])->name('destroy');
+    });
     Route::middleware('plugin:audit_log')->get('/audit-log', [AuditController::class, 'index'])->name('audit_log.index');
     // Developer Portal (replaces stub)
     Route::middleware('plugin:api_access')->prefix('developer')->name('developer.')->group(function () {

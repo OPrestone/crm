@@ -147,7 +147,7 @@
 
         {{-- Stats --}}
         <div class="row g-3 mb-4">
-            @php $statItems = [['Total Requests','total','primary','bi-lightning-charge'],['Today','today','info','bi-calendar-day'],['Errors','errors','danger','bi-x-octagon'],['Webhooks Sent','wh_sent','success','bi-broadcast']]; @endphp
+            @php $statItems = [['Total Requests','primary','total','bi-lightning-charge'],['Today','info','today','bi-calendar-day'],['Errors','danger','errors','bi-x-octagon'],['Webhooks Sent','success','wh_sent','bi-broadcast']]; @endphp
             @foreach($statItems as $s)
             <div class="col-6">
                 <div class="card border-0 shadow-sm text-center p-3">

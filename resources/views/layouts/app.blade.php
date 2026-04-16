@@ -21,8 +21,8 @@
         </div>
     </a>
     @php
-        $isSuperAdmin = auth()->user()->isSuperAdmin();
-        $tenant = auth()->user()->tenant;
+        $isSuperAdmin  = auth()->user()->isSuperAdmin();
+        $tenant        = auth()->user()->tenant;
         $enabledPlugins = ($tenant && !$isSuperAdmin) ? $tenant->enabledPluginSlugs() : [];
         $has = fn(string $slug) => $isSuperAdmin || in_array($slug, $enabledPlugins);
     @endphp
@@ -43,6 +43,7 @@
         <a href="{{ route('admin.plugins.index') }}" class="nav-item-link {{ request()->routeIs('admin.plugins*') ? 'active' : '' }}">
             <span class="nav-icon"><i class="bi bi-puzzle-fill"></i></span>Plugins
         </a>
+
         @else
         {{-- Tenant sidebar (plugin-gated) --}}
         <div class="sidebar-section">Main</div>
@@ -50,6 +51,7 @@
             <span class="nav-icon"><i class="bi bi-grid-1x2-fill"></i></span>Dashboard
         </a>
 
+        {{-- CRM --}}
         @if($has('contacts') || $has('companies') || $has('leads') || $has('deals') || $has('tasks'))
         <div class="sidebar-section">CRM</div>
         @endif
@@ -84,13 +86,59 @@
         </a>
         @endif
 
+        {{-- Sales --}}
+        @if($has('products') || $has('quotes') || $has('invoicing') || $has('goals'))
+        <div class="sidebar-section">Sales</div>
+        @endif
+
+        @if($has('products'))
+        <a href="{{ route('products.index') }}" class="nav-item-link {{ request()->routeIs('products.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-box-seam-fill"></i></span>Products
+        </a>
+        @endif
+
+        @if($has('quotes'))
+        <a href="{{ route('quotes.index') }}" class="nav-item-link {{ request()->routeIs('quotes.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-file-earmark-ruled-fill"></i></span>Quotes
+        </a>
+        @endif
+
         @if($has('invoicing'))
-        <div class="sidebar-section">Finance</div>
         <a href="{{ route('invoices.index') }}" class="nav-item-link {{ request()->routeIs('invoices.*') ? 'active' : '' }}">
             <span class="nav-icon"><i class="bi bi-receipt"></i></span>Invoices
         </a>
         @endif
 
+        @if($has('goals'))
+        <a href="{{ route('goals.index') }}" class="nav-item-link {{ request()->routeIs('goals.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-bullseye"></i></span>Goals
+        </a>
+        @endif
+
+        {{-- Operations --}}
+        @if($has('calendar') || $has('helpdesk') || $has('documents'))
+        <div class="sidebar-section">Operations</div>
+        @endif
+
+        @if($has('calendar'))
+        <a href="{{ route('appointments.index') }}" class="nav-item-link {{ request()->routeIs('appointments.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-calendar3"></i></span>Calendar
+        </a>
+        @endif
+
+        @if($has('helpdesk'))
+        <a href="{{ route('tickets.index') }}" class="nav-item-link {{ request()->routeIs('tickets.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-headset"></i></span>Help Desk
+        </a>
+        @endif
+
+        @if($has('documents'))
+        <a href="{{ route('documents.index') }}" class="nav-item-link {{ request()->routeIs('documents.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-folder2-open"></i></span>Documents
+        </a>
+        @endif
+
+        {{-- AI --}}
         @if($has('ai_tools'))
         <div class="sidebar-section">AI &amp; Intelligence</div>
         <a href="{{ route('ai.index') }}" class="nav-item-link {{ request()->routeIs('ai.index','ai.lead-score','ai.deal-insight','ai.contact-enrich') ? 'active' : '' }}">
@@ -104,6 +152,56 @@
         </a>
         @endif
 
+        {{-- Pro / Enterprise stubs --}}
+        @if($has('email_campaigns') || $has('web_forms') || $has('contracts') || $has('forecasting'))
+        <div class="sidebar-section">Marketing</div>
+        @endif
+        @if($has('email_campaigns'))
+        <a href="{{ route('email_campaigns.index') }}" class="nav-item-link {{ request()->routeIs('email_campaigns.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-envelope-paper-fill"></i></span>Email Campaigns
+        </a>
+        @endif
+        @if($has('web_forms'))
+        <a href="{{ route('web_forms.index') }}" class="nav-item-link {{ request()->routeIs('web_forms.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-ui-checks-grid"></i></span>Web Forms
+        </a>
+        @endif
+        @if($has('contracts'))
+        <a href="{{ route('contracts.index') }}" class="nav-item-link {{ request()->routeIs('contracts.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-file-earmark-text-fill"></i></span>Contracts
+        </a>
+        @endif
+        @if($has('forecasting'))
+        <a href="{{ route('forecasting.index') }}" class="nav-item-link {{ request()->routeIs('forecasting.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-graph-up-arrow"></i></span>Forecasting
+        </a>
+        @endif
+
+        @if($has('commissions') || $has('territories') || $has('audit_log') || $has('api_access'))
+        <div class="sidebar-section">Enterprise</div>
+        @endif
+        @if($has('commissions'))
+        <a href="{{ route('commissions.index') }}" class="nav-item-link {{ request()->routeIs('commissions.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-cash-coin"></i></span>Commissions
+        </a>
+        @endif
+        @if($has('territories'))
+        <a href="{{ route('territories.index') }}" class="nav-item-link {{ request()->routeIs('territories.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-map-fill"></i></span>Territories
+        </a>
+        @endif
+        @if($has('audit_log'))
+        <a href="{{ route('audit_log.index') }}" class="nav-item-link {{ request()->routeIs('audit_log.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-journal-check"></i></span>Audit Log
+        </a>
+        @endif
+        @if($has('api_access'))
+        <a href="{{ route('api_access.index') }}" class="nav-item-link {{ request()->routeIs('api_access.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-code-slash"></i></span>API &amp; Webhooks
+        </a>
+        @endif
+
+        {{-- Compliance --}}
         @if($has('id_verification'))
         <div class="sidebar-section">Compliance</div>
         <a href="{{ route('id-verification.index') }}" class="nav-item-link {{ request()->routeIs('id-verification.*') ? 'active' : '' }}">
@@ -111,6 +209,7 @@
         </a>
         @endif
 
+        {{-- Tools --}}
         @if($has('cards') || $has('reports'))
         <div class="sidebar-section">Tools</div>
         @endif
@@ -127,6 +226,7 @@
         </a>
         @endif
 
+        {{-- Account --}}
         @if($has('notifications') || $has('settings'))
         <div class="sidebar-section">Account</div>
         @endif

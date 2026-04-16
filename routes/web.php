@@ -3,19 +3,26 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminPluginController;
 use App\Http\Controllers\AiController;
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DealController;
+use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\GoalController;
 use App\Http\Controllers\IdVerificationController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LeadController;
+use App\Http\Controllers\ModuleStubController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\TicketController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -37,7 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // --- Plugin-gated modules ---
+    // ── Plugin-gated modules ──────────────────────────────────────────────────
 
     // Contacts
     Route::middleware('plugin:contacts')->group(function () {
@@ -64,10 +71,44 @@ Route::middleware('auth')->group(function () {
         Route::resource('deals', DealController::class);
     });
 
+    // Products
+    Route::middleware('plugin:products')->group(function () {
+        Route::resource('products', ProductController::class);
+    });
+
+    // Quotes
+    Route::middleware('plugin:quotes')->group(function () {
+        Route::resource('quotes', QuoteController::class);
+        Route::get('/quotes/{quote}/pdf', [QuoteController::class, 'pdf'])->name('quotes.pdf');
+        Route::patch('/quotes/{quote}/status', [QuoteController::class, 'updateStatus'])->name('quotes.status');
+    });
+
     // Invoicing
     Route::middleware('plugin:invoicing')->group(function () {
         Route::resource('invoices', InvoiceController::class);
         Route::get('/invoices/{invoice}/pdf', [InvoiceController::class, 'pdf'])->name('invoices.pdf');
+    });
+
+    // Help Desk / Tickets
+    Route::middleware('plugin:helpdesk')->group(function () {
+        Route::resource('tickets', TicketController::class);
+        Route::post('/tickets/{ticket}/reply', [TicketController::class, 'reply'])->name('tickets.reply');
+    });
+
+    // Calendar / Appointments
+    Route::middleware('plugin:calendar')->group(function () {
+        Route::resource('appointments', AppointmentController::class);
+    });
+
+    // Documents
+    Route::middleware('plugin:documents')->group(function () {
+        Route::resource('documents', DocumentController::class)->except(['edit', 'update']);
+        Route::get('/documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
+    });
+
+    // Goals & Targets
+    Route::middleware('plugin:goals')->group(function () {
+        Route::resource('goals', GoalController::class);
     });
 
     // Cards
@@ -122,6 +163,16 @@ Route::middleware('auth')->group(function () {
         Route::post('/notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.readAll');
         Route::post('/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
     });
+
+    // ── Coming-soon stub modules (Pro / Enterprise) ───────────────────────────
+    Route::middleware('plugin:email_campaigns')->get('/email-campaigns', [ModuleStubController::class, 'show'])->defaults('module', 'email_campaigns')->name('email_campaigns.index');
+    Route::middleware('plugin:web_forms')->get('/web-forms', [ModuleStubController::class, 'show'])->defaults('module', 'web_forms')->name('web_forms.index');
+    Route::middleware('plugin:contracts')->get('/contracts', [ModuleStubController::class, 'show'])->defaults('module', 'contracts')->name('contracts.index');
+    Route::middleware('plugin:forecasting')->get('/forecasting', [ModuleStubController::class, 'show'])->defaults('module', 'forecasting')->name('forecasting.index');
+    Route::middleware('plugin:commissions')->get('/commissions', [ModuleStubController::class, 'show'])->defaults('module', 'commissions')->name('commissions.index');
+    Route::middleware('plugin:territories')->get('/territories', [ModuleStubController::class, 'show'])->defaults('module', 'territories')->name('territories.index');
+    Route::middleware('plugin:audit_log')->get('/audit-log', [ModuleStubController::class, 'show'])->defaults('module', 'audit_log')->name('audit_log.index');
+    Route::middleware('plugin:api_access')->get('/api-access', [ModuleStubController::class, 'show'])->defaults('module', 'api_access')->name('api_access.index');
 
     // Kanban AJAX (accessible if leads or deals plugin is active)
     Route::post('/kanban/update', function (\Illuminate\Http\Request $request) {

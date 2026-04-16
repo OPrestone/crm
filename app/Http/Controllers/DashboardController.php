@@ -16,6 +16,10 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        if (Auth::user()->hasRole('super_admin')) {
+            return redirect()->route('admin.dashboard');
+        }
+
         $tenantId = Auth::user()->tenant_id;
 
         $stats = [

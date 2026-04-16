@@ -16,7 +16,10 @@ use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return auth()->check() ? redirect()->route('dashboard') : redirect()->route('login');
+    if (!auth()->check()) return redirect()->route('login');
+    return auth()->user()->hasRole('super_admin')
+        ? redirect()->route('admin.dashboard')
+        : redirect()->route('dashboard');
 });
 
 require __DIR__.'/auth.php';

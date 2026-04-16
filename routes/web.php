@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\Route;
 // Public marketing pages
 Route::get('/pricing', [MarketingController::class, 'pricing'])->name('pricing');
 Route::get('/how-to', [MarketingController::class, 'howTo'])->name('how-to');
+Route::post('/contact-sales', [MarketingController::class, 'contactSales'])->name('contact.sales');
 
 Route::get('/', function () {
     if (!auth()->check()) return redirect()->route('pricing');

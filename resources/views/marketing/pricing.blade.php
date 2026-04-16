@@ -137,7 +137,7 @@
                     <div class="plan-desc">For large organisations</div>
                     <div class="plan-price"><sup>$</sup><span class="price-val" data-monthly="199" data-annual="159">199</span><sub>/mo</sub></div>
                     <div class="plan-cta">
-                        <a href="{{ route('register', ['plan' => 'enterprise']) }}" class="btn btn-dark w-100">Contact Sales</a>
+                        <button type="button" class="btn btn-dark w-100" data-bs-toggle="modal" data-bs-target="#contactSalesModal">Contact Sales</button>
                     </div>
                     <ul class="plan-features">
                         <li><i class="bi bi-check-circle-fill check"></i>Everything in Pro</li>
@@ -240,7 +240,7 @@
                 ['What happens to my data if I cancel?', 'Your data remains accessible for 30 days after cancellation. You can export everything as CSV or JSON at any time.'],
                 ['Can I invite my team?', 'Starter supports up to 5 users. Pro and Enterprise support unlimited users with role-based access control.'],
                 ['Is my data secure?', 'Yes. All data is encrypted at rest and in transit. We are SOC 2 Type II certified and GDPR compliant.'],
-                ['Do you offer discounts for nonprofits or startups?', 'Yes! Contact our sales team for special pricing for nonprofits, early-stage startups, and educational institutions.'],
+                ['Do you offer discounts for nonprofits or startups?', 'Yes! <a href="#contact-sales" class="text-primary fw-600">Contact our sales team</a> for special pricing for nonprofits, early-stage startups, and educational institutions.'],
             ]; @endphp
             @foreach($faqs as $i => $faq)
             <div class="accordion-item border-0 border-bottom">
@@ -250,7 +250,7 @@
                     </button>
                 </h2>
                 <div id="faq{{ $i }}" class="accordion-collapse collapse {{ $i === 0 ? 'show' : '' }}" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body text-muted">{{ $faq[1] }}</div>
+                    <div class="accordion-body text-muted">{!! $faq[1] !!}</div>
                 </div>
             </div>
             @endforeach
@@ -269,6 +269,111 @@
         </div>
     </div>
 </section>
+
+{{-- ───── Contact Sales Modal ───── --}}
+<div class="modal fade" id="contactSalesModal" tabindex="-1" aria-labelledby="contactSalesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+
+            {{-- ── Success state (shown after form submitted) ── --}}
+            @if(session('sales_success'))
+            <div class="modal-body px-4 py-5 text-center">
+                <div class="mb-3" style="font-size:4rem;">🎉</div>
+                <h4 class="fw-800 mb-2">Thanks, {{ session('sales_name') }}!</h4>
+                <p class="text-muted mb-4">We received your enquiry and will reach out to <strong>{{ session('sales_email') }}</strong> within one business day.</p>
+                <p class="small text-muted mb-4">In the meantime, you can explore the platform on the free plan — no credit card required.</p>
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a href="{{ route('register') }}" class="btn btn-primary btn-lg fw-600"><i class="bi bi-rocket-takeoff me-1"></i>Start Free Trial</a>
+                    <button type="button" class="btn btn-outline-secondary btn-lg" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+            @else
+            {{-- Default form state --}}
+            <div id="salesFormState">
+                <div class="modal-header border-0 pb-0 pt-4 px-4">
+                    <div>
+                        <h4 class="modal-title fw-800 mb-1" id="contactSalesModalLabel">Talk to our Sales Team</h4>
+                        <p class="text-muted small mb-0">Tell us about your team and we'll reach out within one business day.</p>
+                    </div>
+                    <button type="button" class="btn-close ms-3" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body px-4 pb-4 pt-3">
+                    @if(session('sales_error'))
+                    <div class="alert alert-danger py-2 small">{{ session('sales_error') }}</div>
+                    @endif
+                    <form id="salesInquiryForm" method="POST" action="{{ route('contact.sales') }}">
+                        @csrf
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-600">Full Name <span class="text-danger">*</span></label>
+                                <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
+                                       placeholder="Jane Smith" value="{{ old('name') }}" required>
+                                @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-600">Work Email <span class="text-danger">*</span></label>
+                                <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
+                                       placeholder="jane@company.com" value="{{ old('email') }}" required>
+                                @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-600">Company Name <span class="text-danger">*</span></label>
+                                <input type="text" name="company" class="form-control @error('company') is-invalid @enderror"
+                                       placeholder="Acme Inc." value="{{ old('company') }}" required>
+                                @error('company')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-600">Phone Number</label>
+                                <input type="tel" name="phone" class="form-control" placeholder="+1 555 000 0000" value="{{ old('phone') }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-600">Team Size <span class="text-danger">*</span></label>
+                                <select name="team_size" class="form-select @error('team_size') is-invalid @enderror" required>
+                                    <option value="" disabled selected>Select team size…</option>
+                                    <option value="1-10" @selected(old('team_size')=='1-10')>1–10 people</option>
+                                    <option value="11-50" @selected(old('team_size')=='11-50')>11–50 people</option>
+                                    <option value="51-200" @selected(old('team_size')=='51-200')>51–200 people</option>
+                                    <option value="201-500" @selected(old('team_size')=='201-500')>201–500 people</option>
+                                    <option value="500+" @selected(old('team_size')=='500+')>500+ people</option>
+                                </select>
+                                @error('team_size')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-600">Industry</label>
+                                <select name="industry" class="form-select">
+                                    <option value="" disabled selected>Select industry…</option>
+                                    <option @selected(old('industry')=='Technology')>Technology</option>
+                                    <option @selected(old('industry')=='Finance')>Finance</option>
+                                    <option @selected(old('industry')=='Healthcare')>Healthcare</option>
+                                    <option @selected(old('industry')=='Real Estate')>Real Estate</option>
+                                    <option @selected(old('industry')=='Retail')>Retail</option>
+                                    <option @selected(old('industry')=='Manufacturing')>Manufacturing</option>
+                                    <option @selected(old('industry')=='Consulting')>Consulting</option>
+                                    <option @selected(old('industry')=='Other')>Other</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-600">What are you looking to solve?</label>
+                                <textarea name="message" class="form-control" rows="3"
+                                    placeholder="e.g. We need a CRM for 80 reps, with custom pipelines and API integration…">{{ old('message') }}</textarea>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex align-items-center justify-content-between gap-3 flex-wrap">
+                                    <p class="text-muted small mb-0"><i class="bi bi-shield-check me-1 text-success"></i>We never share your info. Expected response: <strong>&lt; 1 business day.</strong></p>
+                                    <button type="submit" class="btn btn-dark btn-lg px-4 fw-600">
+                                        <i class="bi bi-send me-1"></i>Send Enquiry
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            @endif
+
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -277,6 +382,21 @@ document.getElementById('billingToggle').addEventListener('change', function() {
     document.querySelectorAll('.price-val').forEach(el => {
         el.textContent = this.checked ? el.dataset.annual : el.dataset.monthly;
     });
+});
+
+// Auto-open modal on success or on validation errors
+@if(session('sales_success') || ($errors->any() && old('name')))
+window.addEventListener('DOMContentLoaded', function() {
+    new bootstrap.Modal(document.getElementById('contactSalesModal')).show();
+});
+@endif
+
+// Also wire any "contact sales" text links in FAQ
+document.querySelectorAll('a[href="#contact-sales"]').forEach(function(el) {
+    el.setAttribute('data-bs-toggle', 'modal');
+    el.setAttribute('data-bs-target', '#contactSalesModal');
+    el.removeAttribute('href');
+    el.style.cursor = 'pointer';
 });
 </script>
 @endpush

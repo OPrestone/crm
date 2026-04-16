@@ -286,7 +286,7 @@
                         @endif
                     </div>
                     <div class="notification-list overflow-auto flex-1" id="notifList">
-                        @forelse(auth()->user()->crmNotifications()->latest()->take(8)->get() as $notif)
+                        @forelse(auth()->user()->unreadNotifications()->latest()->take(8)->get() as $notif)
                         <div class="notification-item {{ !$notif->isRead() ? 'unread' : '' }}"
                              data-notif-id="{{ $notif->id }}"
                              data-notif-url="{{ $notif->url ?? '' }}"

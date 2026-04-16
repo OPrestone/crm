@@ -31,7 +31,8 @@ class DatabaseSeeder extends Seeder
             'crm_notifications','cards','card_templates','invoice_items','invoices',
             'activities','tasks','deals','leads','contacts','companies',
             'pipeline_stages','model_has_roles','model_has_permissions',
-            'role_has_permissions','roles','permissions','users','tenants',
+            'role_has_permissions','roles','permissions','users',
+            'tenant_plugins','plugins','tenants',
         ];
         foreach ($tables as $t) { DB::table($t)->truncate(); }
         DB::statement('PRAGMA foreign_keys = ON');
@@ -454,5 +455,8 @@ class DatabaseSeeder extends Seeder
             $notif->created_at = now()->modify($ago);
             $notif->saveQuietly();
         }
+
+        // ── Plugins ───────────────────────────────────────────────────────
+        $this->call(PluginSeeder::class);
     }
 }

@@ -29,7 +29,10 @@
                     <td>{{ $tenant->deals_count }}</td>
                     <td><span class="badge bg-{{ $tenant->status === 'active' ? 'success' : ($tenant->status === 'suspended' ? 'warning' : 'danger') }}-subtle text-{{ $tenant->status === 'active' ? 'success' : ($tenant->status === 'suspended' ? 'warning' : 'danger') }}">{{ ucfirst($tenant->status) }}</span></td>
                     <td class="text-muted" style="font-size:12px;">{{ $tenant->created_at->format('M j, Y') }}</td>
-                    <td><a href="{{ route('admin.tenants.edit', $tenant) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a></td>
+                    <td class="d-flex gap-1">
+                        <a href="{{ route('admin.tenants.edit', $tenant) }}" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
+                        <a href="{{ route('admin.plugins.tenant', $tenant) }}" class="btn btn-sm btn-outline-secondary" title="Manage Plugins"><i class="bi bi-puzzle-fill"></i></a>
+                    </td>
                 </tr>
                 @empty
                 <tr><td colspan="8" class="text-center text-muted py-4">No tenants found</td></tr>

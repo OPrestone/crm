@@ -20,31 +20,78 @@
             <div class="brand-sub">ENTERPRISE CRM</div>
         </div>
     </a>
+    @php
+        $isSuperAdmin = auth()->user()->isSuperAdmin();
+        $tenant = auth()->user()->tenant;
+        $enabledPlugins = ($tenant && !$isSuperAdmin) ? $tenant->enabledPluginSlugs() : [];
+        $has = fn(string $slug) => $isSuperAdmin || in_array($slug, $enabledPlugins);
+    @endphp
     <div class="sidebar-nav">
+
+        @if($isSuperAdmin)
+        {{-- Super Admin sidebar --}}
+        <div class="sidebar-section">Platform</div>
+        <a href="{{ route('admin.dashboard') }}" class="nav-item-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-speedometer2"></i></span>Dashboard
+        </a>
+        <a href="{{ route('admin.tenants') }}" class="nav-item-link {{ request()->routeIs('admin.tenants*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-building-fill"></i></span>Tenants
+        </a>
+        <a href="{{ route('admin.users') }}" class="nav-item-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-people-fill"></i></span>Users
+        </a>
+        <a href="{{ route('admin.plugins.index') }}" class="nav-item-link {{ request()->routeIs('admin.plugins*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-puzzle-fill"></i></span>Plugins
+        </a>
+        @else
+        {{-- Tenant sidebar (plugin-gated) --}}
         <div class="sidebar-section">Main</div>
         <a href="{{ route('dashboard') }}" class="nav-item-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
             <span class="nav-icon"><i class="bi bi-grid-1x2-fill"></i></span>Dashboard
         </a>
+
+        @if($has('contacts') || $has('companies') || $has('leads') || $has('deals') || $has('tasks'))
         <div class="sidebar-section">CRM</div>
+        @endif
+
+        @if($has('contacts'))
         <a href="{{ route('contacts.index') }}" class="nav-item-link {{ request()->routeIs('contacts.*') ? 'active' : '' }}">
             <span class="nav-icon"><i class="bi bi-person-lines-fill"></i></span>Contacts
         </a>
+        @endif
+
+        @if($has('companies'))
         <a href="{{ route('companies.index') }}" class="nav-item-link {{ request()->routeIs('companies.*') ? 'active' : '' }}">
             <span class="nav-icon"><i class="bi bi-building"></i></span>Companies
         </a>
+        @endif
+
+        @if($has('leads'))
         <a href="{{ route('leads.index') }}" class="nav-item-link {{ request()->routeIs('leads.*') ? 'active' : '' }}">
             <span class="nav-icon"><i class="bi bi-funnel-fill"></i></span>Leads
         </a>
+        @endif
+
+        @if($has('deals'))
         <a href="{{ route('deals.index') }}" class="nav-item-link {{ request()->routeIs('deals.*') ? 'active' : '' }}">
             <span class="nav-icon"><i class="bi bi-briefcase-fill"></i></span>Deals
         </a>
+        @endif
+
+        @if($has('tasks'))
         <a href="{{ route('tasks.index') }}" class="nav-item-link {{ request()->routeIs('tasks.*') ? 'active' : '' }}">
             <span class="nav-icon"><i class="bi bi-check2-square"></i></span>Tasks
         </a>
+        @endif
+
+        @if($has('invoicing'))
         <div class="sidebar-section">Finance</div>
         <a href="{{ route('invoices.index') }}" class="nav-item-link {{ request()->routeIs('invoices.*') ? 'active' : '' }}">
             <span class="nav-icon"><i class="bi bi-receipt"></i></span>Invoices
         </a>
+        @endif
+
+        @if($has('ai_tools'))
         <div class="sidebar-section">AI &amp; Intelligence</div>
         <a href="{{ route('ai.index') }}" class="nav-item-link {{ request()->routeIs('ai.index','ai.lead-score','ai.deal-insight','ai.contact-enrich') ? 'active' : '' }}">
             <span class="nav-icon"><i class="bi bi-robot"></i></span>AI Assistant
@@ -55,31 +102,48 @@
         <a href="{{ route('ai.email') }}" class="nav-item-link {{ request()->routeIs('ai.email') ? 'active' : '' }}">
             <span class="nav-icon"><i class="bi bi-envelope-paper"></i></span>Email Composer
         </a>
+        @endif
+
+        @if($has('id_verification'))
         <div class="sidebar-section">Compliance</div>
         <a href="{{ route('id-verification.index') }}" class="nav-item-link {{ request()->routeIs('id-verification.*') ? 'active' : '' }}">
             <span class="nav-icon"><i class="bi bi-shield-check"></i></span>ID Verification
         </a>
+        @endif
+
+        @if($has('cards') || $has('reports'))
         <div class="sidebar-section">Tools</div>
+        @endif
+
+        @if($has('cards'))
         <a href="{{ route('cards.index') }}" class="nav-item-link {{ request()->routeIs('cards.*') ? 'active' : '' }}">
             <span class="nav-icon"><i class="bi bi-credit-card-2-front"></i></span>Card Generator
         </a>
+        @endif
+
+        @if($has('reports'))
         <a href="{{ route('reports.index') }}" class="nav-item-link {{ request()->routeIs('reports.*') ? 'active' : '' }}">
             <span class="nav-icon"><i class="bi bi-bar-chart-line-fill"></i></span>Reports
         </a>
-        @if(auth()->user()->isSuperAdmin())
-        <div class="sidebar-section">Administration</div>
-        <a href="{{ route('admin.dashboard') }}" class="nav-item-link {{ request()->routeIs('admin.*') ? 'active' : '' }}">
-            <span class="nav-icon"><i class="bi bi-shield-lock-fill"></i></span>Admin Panel
+        @endif
+
+        @if($has('notifications') || $has('settings'))
+        <div class="sidebar-section">Account</div>
+        @endif
+
+        @if($has('notifications'))
+        <a href="{{ route('notifications.index') }}" class="nav-item-link {{ request()->routeIs('notifications.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-bell-fill"></i></span>Notifications
         </a>
-        <a href="{{ route('settings.index') }}" class="nav-item-link {{ request()->routeIs('settings.*') ? 'active' : '' }}">
-            <span class="nav-icon"><i class="bi bi-gear-fill"></i></span>Settings
-        </a>
-        @elseif(auth()->user()->isTenantAdmin())
-        <div class="sidebar-section">Administration</div>
+        @endif
+
+        @if($has('settings') && auth()->user()->isTenantAdmin())
         <a href="{{ route('settings.index') }}" class="nav-item-link {{ request()->routeIs('settings.*') ? 'active' : '' }}">
             <span class="nav-icon"><i class="bi bi-gear-fill"></i></span>Settings
         </a>
         @endif
+
+        @endif {{-- end if isSuperAdmin --}}
     </div>
     <div class="sidebar-footer">
         <div class="d-flex align-items-center gap-2">
@@ -163,7 +227,7 @@
         @endif
         @if(session('error'))
         <div class="alert alert-danger alert-dismissible auto-dismiss fade show mb-4">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>{!! session('error') !!}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
         @endif

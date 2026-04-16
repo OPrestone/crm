@@ -14,6 +14,7 @@ use App\Http\Controllers\GoalController;
 use App\Http\Controllers\IdVerificationController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LeadController;
+use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\MarketingController;
 use App\Http\Controllers\ModuleStubController;
 use App\Http\Controllers\NotificationController;
@@ -182,7 +183,21 @@ Route::middleware('auth')->group(function () {
     Route::middleware('plugin:commissions')->get('/commissions', [ModuleStubController::class, 'show'])->defaults('module', 'commissions')->name('commissions.index');
     Route::middleware('plugin:territories')->get('/territories', [ModuleStubController::class, 'show'])->defaults('module', 'territories')->name('territories.index');
     Route::middleware('plugin:audit_log')->get('/audit-log', [ModuleStubController::class, 'show'])->defaults('module', 'audit_log')->name('audit_log.index');
-    Route::middleware('plugin:api_access')->get('/api-access', [ModuleStubController::class, 'show'])->defaults('module', 'api_access')->name('api_access.index');
+    // Developer Portal (replaces stub)
+    Route::middleware('plugin:api_access')->prefix('developer')->name('developer.')->group(function () {
+        Route::get('/',                    [DeveloperController::class, 'index'])->name('index');
+        Route::get('/apps',                [DeveloperController::class, 'apps'])->name('apps');
+        Route::get('/apps/create',         [DeveloperController::class, 'createApp'])->name('apps.create');
+        Route::post('/apps',               [DeveloperController::class, 'storeApp'])->name('apps.store');
+        Route::get('/apps/{app}',          [DeveloperController::class, 'showApp'])->name('apps.show');
+        Route::patch('/apps/{app}',        [DeveloperController::class, 'updateApp'])->name('apps.update');
+        Route::patch('/apps/{app}/secret', [DeveloperController::class, 'regenerateSecret'])->name('apps.regenerate');
+        Route::delete('/apps/{app}',       [DeveloperController::class, 'destroyApp'])->name('apps.destroy');
+        Route::post('/apps/{app}/test-webhook', [DeveloperController::class, 'testWebhook'])->name('apps.test-webhook');
+        Route::get('/logs',                [DeveloperController::class, 'logs'])->name('logs');
+        Route::get('/webhooks',            [DeveloperController::class, 'webhookLogs'])->name('webhooks');
+        Route::get('/docs',                [DeveloperController::class, 'docs'])->name('docs');
+    });
 
     // Kanban AJAX (accessible if leads or deals plugin is active)
     Route::post('/kanban/update', function (\Illuminate\Http\Request $request) {

@@ -11,6 +11,15 @@ A world-class, enterprise-grade multitenant CRM platform built with Laravel 12 (
 - First login shows a 5-step onboarding walkthrough modal (auto-dismissed, stored in `users.onboarding_completed_at`)
 - "Restart Tour" available in the user avatar dropdown menu
 
+## Developer Portal (`/developer` — Enterprise plugin: `api_access`)
+- **Hub** `/developer` — live stats (API calls, errors, webhooks), 7-day traffic chart, recent request log, app list
+- **Applications** `/developer/apps` — CRUD for API apps with auto-generated `client_id` / `client_secret`
+- **App Detail** `/developer/apps/{id}` — dark-themed credentials display, masked secret with copy button, 1-click regenerate, webhook event subscriptions, IP whitelist, usage stats, recent logs
+- **API Logs** `/developer/logs` — paginated request log with method/status/app/date filters, expandable request+response body
+- **Webhook Deliveries** `/developer/webhooks` — delivery log with event/app/status filters, expandable payload+response
+- **API Docs** `/developer/docs` — interactive documentation with sticky sidebar, all endpoints (Contacts, Companies, Leads, Deals, Products, Invoices), auth guide, webhook event table, error codes, rate limit & pagination reference, cURL/JS/PHP code snippets
+- Models: `DeveloperApp`, `ApiLog`, `WebhookDelivery`
+
 ## Tech Stack
 - **Framework**: Laravel 12, PHP 8.2
 - **Database**: SQLite (row-level multitenancy via `tenant_id`)

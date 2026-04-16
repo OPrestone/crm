@@ -196,8 +196,8 @@
         </a>
         @endif
         @if($has('api_access'))
-        <a href="{{ route('api_access.index') }}" class="nav-item-link {{ request()->routeIs('api_access.*') ? 'active' : '' }}">
-            <span class="nav-icon"><i class="bi bi-code-slash"></i></span>API &amp; Webhooks
+        <a href="{{ route('developer.index') }}" class="nav-item-link {{ request()->routeIs('developer.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-code-slash"></i></span>Developer Portal
         </a>
         @endif
 

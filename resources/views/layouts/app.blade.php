@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Dashboard') — {{ auth()->user()?->tenant?->name ?? config('app.name') }} CRM</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/bootstrap-icons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
     @stack('styles')
 </head>
@@ -164,9 +162,9 @@
         @yield('content')
     </main>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+<script src="{{ asset('assets/vendor/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/chart.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/sortable.min.js') }}"></script>
 <script src="{{ asset('assets/js/app.js') }}"></script>
 @stack('scripts')
 </body>

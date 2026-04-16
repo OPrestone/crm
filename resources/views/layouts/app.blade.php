@@ -45,6 +45,20 @@
         <a href="{{ route('invoices.index') }}" class="nav-item-link {{ request()->routeIs('invoices.*') ? 'active' : '' }}">
             <span class="nav-icon"><i class="bi bi-receipt"></i></span>Invoices
         </a>
+        <div class="sidebar-section">AI &amp; Intelligence</div>
+        <a href="{{ route('ai.index') }}" class="nav-item-link {{ request()->routeIs('ai.index','ai.lead-score','ai.deal-insight','ai.contact-enrich') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-robot"></i></span>AI Assistant
+        </a>
+        <a href="{{ route('ai.insights') }}" class="nav-item-link {{ request()->routeIs('ai.insights') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-graph-up-arrow"></i></span>Pipeline Intelligence
+        </a>
+        <a href="{{ route('ai.email') }}" class="nav-item-link {{ request()->routeIs('ai.email') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-envelope-paper"></i></span>Email Composer
+        </a>
+        <div class="sidebar-section">Compliance</div>
+        <a href="{{ route('id-verification.index') }}" class="nav-item-link {{ request()->routeIs('id-verification.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-shield-check"></i></span>ID Verification
+        </a>
         <div class="sidebar-section">Tools</div>
         <a href="{{ route('cards.index') }}" class="nav-item-link {{ request()->routeIs('cards.*') ? 'active' : '' }}">
             <span class="nav-icon"><i class="bi bi-credit-card-2-front"></i></span>Card Generator

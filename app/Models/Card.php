@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Card extends Model
 {
-    protected $fillable = ['tenant_id', 'template_id', 'contact_id', 'name', 'data', 'created_by'];
+    protected $fillable = ['tenant_id', 'template_id', 'contact_id', 'name', 'photo', 'qr_data', 'data', 'created_by'];
     protected $casts = ['data' => 'array'];
 
     public function tenant() { return $this->belongsTo(Tenant::class); }

@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AiController;
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DealController;
+use App\Http\Controllers\IdVerificationController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\NotificationController;
@@ -60,8 +62,22 @@ Route::middleware('auth')->group(function () {
     Route::get('/cards/create', [CardController::class, 'create'])->name('cards.create');
     Route::post('/cards', [CardController::class, 'store'])->name('cards.store');
     Route::get('/cards/{card}', [CardController::class, 'show'])->name('cards.show');
+    Route::get('/cards/{card}/edit', [CardController::class, 'edit'])->name('cards.edit');
+    Route::put('/cards/{card}', [CardController::class, 'update'])->name('cards.update');
     Route::delete('/cards/{card}', [CardController::class, 'destroy'])->name('cards.destroy');
     Route::get('/cards/{card}/pdf', [CardController::class, 'pdf'])->name('cards.pdf');
+
+    // AI Tools
+    Route::get('/ai', [AiController::class, 'index'])->name('ai.index');
+    Route::get('/ai/insights', [AiController::class, 'insights'])->name('ai.insights');
+    Route::get('/ai/email', [AiController::class, 'emailCompose'])->name('ai.email');
+    Route::get('/ai/leads/{lead}/score', [AiController::class, 'leadScore'])->name('ai.lead-score');
+    Route::get('/ai/deals/{deal}/insight', [AiController::class, 'dealInsight'])->name('ai.deal-insight');
+    Route::get('/ai/contacts/{contact}/enrich', [AiController::class, 'contactEnrich'])->name('ai.contact-enrich');
+
+    // ID Verification
+    Route::resource('id-verification', IdVerificationController::class);
+    Route::patch('/id-verification/{idVerification}/status', [IdVerificationController::class, 'updateStatus'])->name('id-verification.status');
 
     // Reports
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
@@ -94,7 +110,7 @@ Route::middleware('auth')->group(function () {
     })->name('kanban.update');
 
     // Admin Panel (Super Admin only)
-    Route::prefix('admin')->name('admin.')->group(function () {
+    Route::prefix('admin')->name('admin.')->middleware('super_admin')->group(function () {
         Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
         Route::get('/tenants', [AdminController::class, 'tenants'])->name('tenants');
         Route::get('/tenants/create', [AdminController::class, 'createTenant'])->name('tenants.create');

@@ -9,20 +9,11 @@ use App\Models\Lead;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(function ($request, $next) {
-            if (!Auth::user()->isSuperAdmin()) abort(403, 'Super Admin only.');
-            return $next($request);
-        });
-    }
-
     public function dashboard()
     {
         $stats = [

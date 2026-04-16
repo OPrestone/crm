@@ -22,7 +22,7 @@ class Lead extends Model
     public function stage() { return $this->belongsTo(PipelineStage::class, 'stage_id'); }
     public function assignedTo() { return $this->belongsTo(User::class, 'assigned_to'); }
     public function creator() { return $this->belongsTo(User::class, 'created_by'); }
-    public function tasks() { return $this->hasMany(Task::class); }
+    public function tasks() { return $this->morphMany(Task::class, 'taskable'); }
     public function activities() { return $this->morphMany(Activity::class, 'activityable'); }
 
     public function getStatusBadgeAttribute(): string

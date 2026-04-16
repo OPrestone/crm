@@ -23,7 +23,7 @@ class Contact extends Model
     public function creator() { return $this->belongsTo(User::class, 'created_by'); }
     public function deals() { return $this->hasMany(Deal::class); }
     public function leads() { return $this->hasMany(Lead::class); }
-    public function tasks() { return $this->hasMany(Task::class); }
+    public function tasks() { return $this->morphMany(Task::class, 'taskable'); }
     public function invoices() { return $this->hasMany(Invoice::class); }
     public function activities() { return $this->morphMany(Activity::class, 'activityable'); }
 

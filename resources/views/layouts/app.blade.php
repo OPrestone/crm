@@ -268,34 +268,44 @@
         <div class="flex-1 d-md-none"></div>
         <div class="topbar-actions">
             <button class="topbar-btn dark-toggle" id="darkModeToggle" title="Toggle dark mode"><i class="bi bi-moon-fill"></i></button>
-            <div class="dropdown">
-                <button class="topbar-btn position-relative" data-bs-toggle="dropdown">
+            <div class="dropdown" id="notifDropdown">
+                <button class="topbar-btn position-relative" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="bi bi-bell-fill"></i>
                     @php $unread = auth()->user()->unreadNotifications()->count(); @endphp
-                    @if($unread > 0)<span class="notification-badge">{{ $unread > 9 ? '9+' : $unread }}</span>@endif
+                    @if($unread > 0)<span class="notification-badge" id="notifBadge">{{ $unread > 9 ? '9+' : $unread }}</span>@endif
                 </button>
-                <div class="dropdown-menu dropdown-menu-end p-0" style="width:300px;">
-                    <div class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom">
+                <div class="dropdown-menu dropdown-menu-end p-0" style="width:320px;max-height:480px;display:flex;flex-direction:column;">
+                    <div class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom flex-shrink-0">
                         <span class="fw-600">Notifications</span>
-                        @if($unread > 0)<a href="{{ route('notifications.readAll') }}" class="text-primary text-decoration-none" style="font-size:12px;">Mark all read</a>@endif
+                        @if($unread > 0)
+                        <button type="button" id="markAllReadBtn"
+                            data-url="{{ route('notifications.readAll') }}"
+                            class="btn btn-link p-0 text-primary text-decoration-none border-0" style="font-size:12px;">
+                            Mark all read
+                        </button>
+                        @endif
                     </div>
-                    <div class="notification-list">
+                    <div class="notification-list overflow-auto flex-1" id="notifList">
                         @forelse(auth()->user()->crmNotifications()->latest()->take(8)->get() as $notif)
-                        <div class="notification-item {{ !$notif->isRead() ? 'unread' : '' }}" onclick="window.location='{{ $notif->url ?? '#' }}'">
-                            <div class="d-flex gap-2">
-                                <div class="avatar-circle bg-{{ $notif->color }} text-white" style="width:30px;height:30px;font-size:12px;flex-shrink:0;"><i class="bi bi-{{ $notif->icon }}"></i></div>
-                                <div class="flex-1">
-                                    <div class="fw-600" style="font-size:13px;">{{ $notif->title }}</div>
+                        <div class="notification-item {{ !$notif->isRead() ? 'unread' : '' }}"
+                             data-notif-id="{{ $notif->id }}"
+                             data-notif-url="{{ $notif->url ?? '' }}"
+                             data-mark-url="{{ route('notifications.read', $notif) }}"
+                             style="cursor:pointer;">
+                            <div class="d-flex gap-2 align-items-start">
+                                <div class="avatar-circle bg-{{ $notif->color }} text-white flex-shrink-0" style="width:30px;height:30px;font-size:12px;"><i class="bi bi-{{ $notif->icon }}"></i></div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="fw-600 text-truncate" style="font-size:13px;">{{ $notif->title }}</div>
                                     <div class="text-muted" style="font-size:11px;">{{ $notif->created_at->diffForHumans() }}</div>
                                 </div>
-                                @if(!$notif->isRead())<div style="width:7px;height:7px;background:#0d6efd;border-radius:50%;margin-top:4px;flex-shrink:0;"></div>@endif
+                                @if(!$notif->isRead())<div class="notif-dot flex-shrink-0" style="width:7px;height:7px;background:#0d6efd;border-radius:50%;margin-top:5px;"></div>@endif
                             </div>
                         </div>
                         @empty
-                        <div class="text-center text-muted py-4" style="font-size:13px;">No notifications yet</div>
+                        <div class="text-center text-muted py-4" style="font-size:13px;" id="notifEmpty">No notifications yet</div>
                         @endforelse
                     </div>
-                    <div class="border-top text-center py-2">
+                    <div class="border-top text-center py-2 flex-shrink-0">
                         <a href="{{ route('notifications.index') }}" class="text-primary text-decoration-none" style="font-size:13px;">View all</a>
                     </div>
                 </div>
@@ -366,5 +376,90 @@ function restartTour() {
 }
 </script>
 @stack('scripts')
+<script>
+(function () {
+    const CSRF = document.querySelector('meta[name="csrf-token"]')?.content ?? '{{ csrf_token() }}';
+
+    function updateBadge(count) {
+        const badge = document.getElementById('notifBadge');
+        const btn   = document.getElementById('markAllReadBtn');
+        if (count > 0) {
+            if (badge) { badge.textContent = count > 9 ? '9+' : count; badge.style.display = ''; }
+        } else {
+            if (badge) badge.style.display = 'none';
+            if (btn)   btn.style.display   = 'none';
+        }
+    }
+
+    function removeItem(el) {
+        el.style.transition = 'opacity .2s, max-height .25s, padding .25s, margin .25s';
+        el.style.overflow   = 'hidden';
+        el.style.opacity    = '0';
+        el.style.maxHeight  = el.offsetHeight + 'px';
+        requestAnimationFrame(() => {
+            el.style.maxHeight = '0';
+            el.style.padding   = '0';
+            el.style.margin    = '0';
+        });
+        setTimeout(() => {
+            el.remove();
+            const list = document.getElementById('notifList');
+            if (list && !list.querySelector('.notification-item')) {
+                list.innerHTML = '<div class="text-center text-muted py-4" style="font-size:13px;">No notifications yet</div>';
+            }
+        }, 280);
+    }
+
+    // Single notification click
+    document.addEventListener('click', function (e) {
+        const item = e.target.closest('[data-notif-id]');
+        if (!item) return;
+        e.preventDefault();
+        e.stopPropagation();
+
+        const markUrl  = item.dataset.markUrl;
+        const notifUrl = item.dataset.notifUrl;
+
+        fetch(markUrl, {
+            method:  'POST',
+            headers: { 'X-CSRF-TOKEN': CSRF, 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+        })
+        .then(r => r.json())
+        .then(data => {
+            removeItem(item);
+            updateBadge(data.unread ?? 0);
+            if (notifUrl) window.location.href = notifUrl;
+        })
+        .catch(() => {
+            if (notifUrl) window.location.href = notifUrl;
+        });
+    });
+
+    // Mark all read
+    const markAllBtn = document.getElementById('markAllReadBtn');
+    if (markAllBtn) {
+        markAllBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            fetch(markAllBtn.dataset.url, {
+                method:  'POST',
+                headers: { 'X-CSRF-TOKEN': CSRF, 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+            })
+            .then(r => r.json())
+            .then(() => {
+                const list = document.getElementById('notifList');
+                if (list) {
+                    list.querySelectorAll('.notification-item').forEach(el => {
+                        el.classList.remove('unread');
+                        const dot = el.querySelector('.notif-dot');
+                        if (dot) dot.remove();
+                    });
+                }
+                updateBadge(0);
+            });
+        });
+    }
+})();
+</script>
 </body>
 </html>

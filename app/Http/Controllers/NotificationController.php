@@ -14,16 +14,30 @@ class NotificationController extends Controller
         return view('notifications.index', compact('notifications'));
     }
 
-    public function readAll()
+    public function readAll(Request $request)
     {
         Auth::user()->crmNotifications()->whereNull('read_at')->update(['read_at' => now()]);
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json(['success' => true]);
+        }
+
         return back()->with('success', 'All notifications marked as read.');
     }
 
-    public function markRead(CrmNotification $notification)
+    public function markRead(Request $request, CrmNotification $notification)
     {
         abort_if($notification->user_id !== Auth::id(), 403);
         $notification->markAsRead();
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success'  => true,
+                'url'      => $notification->url,
+                'unread'   => Auth::user()->unreadNotifications()->count(),
+            ]);
+        }
+
         return back();
     }
 }

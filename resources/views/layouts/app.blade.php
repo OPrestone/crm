@@ -274,8 +274,8 @@
                     @php $unread = auth()->user()->unreadNotifications()->count(); @endphp
                     @if($unread > 0)<span class="notification-badge" id="notifBadge">{{ $unread > 9 ? '9+' : $unread }}</span>@endif
                 </button>
-                <div class="dropdown-menu dropdown-menu-end p-0" style="width:320px;max-height:480px;display:flex;flex-direction:column;">
-                    <div class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom flex-shrink-0">
+                <div class="dropdown-menu dropdown-menu-end p-0" style="width:320px;">
+                    <div class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom">
                         <span class="fw-600">Notifications</span>
                         @if($unread > 0)
                         <button type="button" id="markAllReadBtn"
@@ -305,7 +305,7 @@
                         <div class="text-center text-muted py-4" style="font-size:13px;" id="notifEmpty">No notifications yet</div>
                         @endforelse
                     </div>
-                    <div class="border-top text-center py-2 flex-shrink-0">
+                    <div class="border-top text-center py-2">
                         <a href="{{ route('notifications.index') }}" class="text-primary text-decoration-none" style="font-size:13px;">View all</a>
                     </div>
                 </div>

@@ -307,6 +307,11 @@
                     @if(auth()->user()->isSuperAdmin() || auth()->user()->isTenantAdmin())
                     <li><a class="dropdown-item" href="{{ route('settings.index') }}"><i class="bi bi-gear"></i> Settings</a></li>
                     @endif
+                    <li><a class="dropdown-item" href="{{ route('how-to') }}" target="_blank"><i class="bi bi-book"></i> How-To Guide</a></li>
+                    <li><a class="dropdown-item" href="{{ route('pricing') }}" target="_blank"><i class="bi bi-tag"></i> View Plans</a></li>
+                    <li>
+                        <button class="dropdown-item" onclick="restartTour()"><i class="bi bi-play-circle"></i> Restart Tour</button>
+                    </li>
                     <li><hr class="dropdown-divider my-1"></li>
                     <li>
                         <form method="POST" action="{{ route('logout') }}">
@@ -344,6 +349,16 @@
 <script src="{{ asset('assets/vendor/chart.min.js') }}"></script>
 <script src="{{ asset('assets/vendor/sortable.min.js') }}"></script>
 <script src="{{ asset('assets/js/app.js') }}"></script>
+<script>
+function restartTour() {
+    fetch('{{ route("onboarding.restart") }}', {
+        method: 'POST',
+        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Content-Type': 'application/json' }
+    }).then(r => r.json()).then(data => {
+        if (data.redirect) window.location.href = data.redirect;
+    });
+}
+</script>
 @stack('scripts')
 </body>
 </html>

@@ -11,7 +11,7 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasRoles;
 
-    protected $fillable = ['name', 'email', 'password', 'tenant_id', 'job_title', 'phone', 'avatar', 'is_active'];
+    protected $fillable = ['name', 'email', 'password', 'tenant_id', 'job_title', 'phone', 'avatar', 'is_active', 'onboarding_completed_at'];
 
     protected $hidden = ['password', 'remember_token'];
 
@@ -21,6 +21,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_active' => 'boolean',
+            'onboarding_completed_at' => 'datetime',
         ];
     }
 

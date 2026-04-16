@@ -71,6 +71,8 @@ class DashboardController extends Controller
 
         $chartData = ['months' => $months, 'revenues' => $revenues];
 
-        return view('dashboard', compact('stats', 'recentTasks', 'recentLeads', 'recentActivities', 'pipelineData', 'chartData'));
+        $showOnboarding = is_null(Auth::user()->onboarding_completed_at);
+
+        return view('dashboard', compact('stats', 'recentTasks', 'recentLeads', 'recentActivities', 'pipelineData', 'chartData', 'showOnboarding'));
     }
 }

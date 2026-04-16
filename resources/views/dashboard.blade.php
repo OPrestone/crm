@@ -219,3 +219,7 @@ new Chart(document.getElementById('pipelineChart'), {
 });
 </script>
 @endpush
+
+@if($showOnboarding ?? false)
+@include('onboarding.walkthrough')
+@endif

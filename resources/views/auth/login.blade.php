@@ -38,5 +38,9 @@
             Don't have an account? <a href="{{ route('register') }}" class="text-primary fw-600">Create one free</a>
         </div>
         @endif
+        <div class="text-center mt-2" style="font-size:13px;">
+            <a href="{{ route('pricing') }}" class="text-muted me-3"><i class="bi bi-tag me-1"></i>Pricing</a>
+            <a href="{{ route('how-to') }}" class="text-muted"><i class="bi bi-book me-1"></i>How-To Guide</a>
+        </div>
     </div>
 </x-guest-layout>

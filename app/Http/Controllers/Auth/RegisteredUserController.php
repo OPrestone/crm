@@ -32,12 +32,15 @@ class RegisteredUserController extends Controller
         ]);
 
         // Create tenant
+        $allowedPlans = ['free', 'starter', 'pro', 'enterprise'];
+        $plan = in_array($request->input('plan'), $allowedPlans) ? $request->input('plan') : 'free';
+
         $slug = Str::slug($request->company_name) . '-' . Str::random(4);
         $tenant = Tenant::create([
             'name' => $request->company_name,
             'slug' => $slug,
             'email' => $request->email,
-            'plan' => 'free',
+            'plan' => $plan,
         ]);
 
         // Create user

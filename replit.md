@@ -3,6 +3,14 @@
 ## Overview
 A world-class, enterprise-grade multitenant CRM platform built with Laravel 12 (PHP 8.2), Bootstrap 5 (hosted locally), SQLite, and a full plugin/module system gated by subscription plan tier.
 
+## Public Marketing Pages
+- `/` — redirects to `/pricing` when not logged in
+- `/pricing` — full pricing page with Free/Starter/Pro/Enterprise plan cards, monthly/annual toggle, feature comparison table, FAQ, CTA
+- `/how-to` — full documentation page with sticky sidebar nav, step-by-step guides for every module, video placeholder
+- `/register?plan=starter` — pre-selects plan badge on registration; passes `plan` to tenant creation
+- First login shows a 5-step onboarding walkthrough modal (auto-dismissed, stored in `users.onboarding_completed_at`)
+- "Restart Tour" available in the user avatar dropdown menu
+
 ## Tech Stack
 - **Framework**: Laravel 12, PHP 8.2
 - **Database**: SQLite (row-level multitenancy via `tenant_id`)

@@ -14,8 +14,10 @@ use App\Http\Controllers\GoalController;
 use App\Http\Controllers\IdVerificationController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LeadController;
+use App\Http\Controllers\MarketingController;
 use App\Http\Controllers\ModuleStubController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuoteController;
@@ -25,8 +27,12 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TicketController;
 use Illuminate\Support\Facades\Route;
 
+// Public marketing pages
+Route::get('/pricing', [MarketingController::class, 'pricing'])->name('pricing');
+Route::get('/how-to', [MarketingController::class, 'howTo'])->name('how-to');
+
 Route::get('/', function () {
-    if (!auth()->check()) return redirect()->route('login');
+    if (!auth()->check()) return redirect()->route('pricing');
     return auth()->user()->hasRole('super_admin')
         ? redirect()->route('admin.dashboard')
         : redirect()->route('dashboard');
@@ -38,6 +44,10 @@ Route::middleware('auth')->group(function () {
 
     // Dashboard (always accessible)
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Onboarding
+    Route::post('/onboarding/complete', [OnboardingController::class, 'complete'])->name('onboarding.complete');
+    Route::post('/onboarding/restart', [OnboardingController::class, 'restart'])->name('onboarding.restart');
 
     // Profile (always accessible)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -26,7 +26,13 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // ── Wipe all tables so seeder is safely re-runnable ───────────────
-        DB::statement('PRAGMA foreign_keys = OFF');
+        $driver = DB::getDriverName();
+        if ($driver === 'sqlite') {
+            DB::statement('PRAGMA foreign_keys = OFF');
+        } else {
+            DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        }
+
         $tables = [
             'crm_notifications','cards','card_templates','invoice_items','invoices',
             'activities','tasks','deals','leads','contacts','companies',
@@ -34,8 +40,15 @@ class DatabaseSeeder extends Seeder
             'role_has_permissions','roles','permissions','users',
             'tenant_plugins','plugins','tenants',
         ];
-        foreach ($tables as $t) { DB::table($t)->truncate(); }
-        DB::statement('PRAGMA foreign_keys = ON');
+        foreach ($tables as $t) {
+            DB::table($t)->truncate();
+        }
+
+        if ($driver === 'sqlite') {
+            DB::statement('PRAGMA foreign_keys = ON');
+        } else {
+            DB::statement('SET FOREIGN_KEY_CHECKS = 1');
+        }
 
         // ── Roles ─────────────────────────────────────────────────────────
         foreach (['super_admin', 'tenant_admin', 'manager', 'staff'] as $role) {

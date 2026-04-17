@@ -165,3 +165,39 @@ Every CRM module is a plugin with a minimum plan tier. Plugins are gated via `pl
 - `Document` — `documentable()` polymorphic (Contact, Deal)
 - `Goal` — auto-calculates `current_value` from live Deal/Lead/Contact data
 - `Appointment` — has `user_id` (owner) + optional `contact_id`
+
+## Seeder Architecture (Modular — 26 seeders)
+Run with `php artisan db:seed`. Safe to re-run (truncates all data tables first).
+
+Execution order (each seeder queries DB for its dependencies, no shared state):
+
+| Order | Seeder | Creates |
+|-------|--------|---------|
+| 1 | `RoleSeeder` | 4 roles (super_admin, tenant_admin, manager, staff) |
+| 2 | `TenantSeeder` | 2 tenants + 5 users + 8 CRM settings (key-value) |
+| 3 | `PipelineSeeder` | 12 pipeline stages (6 deal + 6 lead) |
+| 4 | `CompanySeeder` | 12 companies |
+| 5 | `ContactSeeder` | 25 contacts |
+| 6 | `LeadSeeder` | 15 leads |
+| 7 | `DealSeeder` | 18 deals |
+| 8 | `TaskSeeder` | 20 tasks |
+| 9 | `ActivitySeeder` | 20 activities (polymorphic to contacts/leads/deals) |
+| 10 | `AppointmentSeeder` | 12 appointments |
+| 11 | `ProductSeeder` | 15 products (CRM plans, services, add-ons) |
+| 12 | `InvoiceSeeder` | 12 invoices + 30 line items |
+| 13 | `QuoteSeeder` | 8 quotes + 25 line items (linked to products) |
+| 14 | `TicketSeeder` | 10 tickets + 19 replies |
+| 15 | `DocumentSeeder` | 10 documents (polymorphic to contacts/companies/deals) |
+| 16 | `GoalSeeder` | 8 goals (revenue, deals_won, leads_created, etc.) |
+| 17 | `CardSeeder` | 4 card templates + 7 cards |
+| 18 | `NotificationSeeder` | 16 CRM notifications |
+| 19 | `EmailCampaignSeeder` | 5 campaigns + 45 recipient records |
+| 20 | `WebFormSeeder` | 3 forms + 9 submissions |
+| 21 | `ContractSeeder` | 3 contract templates + 7 contracts |
+| 22 | `ForecastingSeeder` | 16 sales quotas (quarterly per rep) |
+| 23 | `CommissionSeeder` | 3 commission plans + 4 commissions |
+| 24 | `TerritorySeeder` | 6 territories + 10 territory-user assignments |
+| 25 | `DeveloperSeeder` | 3 developer API apps |
+| 26 | `PluginSeeder` | 27 plugins |
+
+Demo credentials: `admin@crm.io` / `password` (super_admin), `demo@acme.com` / `password` (enterprise tenant admin)

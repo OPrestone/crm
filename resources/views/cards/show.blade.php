@@ -22,9 +22,10 @@
                 @php
                     $design   = $card->template?->design ?? [];
                     $fields   = $card->data ?? [];
-                    $bgColor  = $design['bg_color'] ?? '#1e3a5f';
-                    $txtColor = $design['text_color'] ?? '#ffffff';
-                    $accent   = $design['accent'] ?? '#f59e0b';
+                    $bgColor  = $design['bg_color']               ?? '#1e3a5f';
+                    $txtColor = $design['text_color']             ?? '#ffffff';
+                    $accent   = $design['accent_color'] ?? $design['accent'] ?? '#f59e0b';
+                    $divColor = $design['divider_color'] ?? $accent;
                 @endphp
                 <div style="width:380px;min-height:220px;border-radius:16px;background:{{ $bgColor }};color:{{ $txtColor }};padding:28px 28px 24px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.3);overflow:hidden;">
                     <div style="position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:{{ $accent }};opacity:.2;"></div>

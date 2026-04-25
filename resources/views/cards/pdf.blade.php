@@ -7,10 +7,11 @@
     $contact  = $card->contact;
     $design   = $card->template?->design ?? [];
 
-    /* Support both 'accent' and 'accent_color' key names across templates */
-    $accent   = $design['accent']      ?? $design['accent_color']  ?? '#f59e0b';
-    $bgColor  = $design['bg_color']    ?? '#1e3a5f';
-    $txtColor = $design['text_color']  ?? '#ffffff';
+    /* All seeded templates use 'accent_color' — fall back to 'accent' for custom cards */
+    $accent   = $design['accent_color'] ?? $design['accent']       ?? '#f59e0b';
+    $bgColor  = $design['bg_color']                                ?? '#1e3a5f';
+    $txtColor = $design['text_color']                              ?? '#ffffff';
+    $divColor = $design['divider_color']  ?? $accent;
 
     $name     = $fields['name']    ?? $contact?->full_name        ?? $card->name;
     $title    = $fields['title']   ?? $contact?->job_title        ?? '';
@@ -22,85 +23,113 @@
     $initial  = strtoupper(substr($name, 0, 1));
 @endphp
 <style>
-/* ─── Page = exact business card (ISO ID-1 / CR80) ─────────────────────── */
-@page { margin: 0; size: 241.89pt 153.07pt; }
-html, body {
+/* ── Page size = ISO ID-1 / CR80 business card, zero margins ── */
+@page { margin: 0; size: 241.89pt 153.07pt landscape; }
+
+/* Fill background on both html + body so no white edges show */
+html {
     margin: 0; padding: 0;
-    width: 241.89pt; height: 153.07pt;
-    font-family: DejaVu Sans, Arial, sans-serif;
+    background: {{ $bgColor }};
+}
+body {
+    margin: 0; padding: 0;
     background: {{ $bgColor }};
     color: {{ $txtColor }};
-}
-
-/* ─── Outer wrapper ─────────────────────────────────────────────────────── */
-.wrap {
+    font-family: DejaVu Sans, Arial, sans-serif;
     width: 241.89pt;
     height: 153.07pt;
-    position: relative;
-    padding: 14pt 16pt 13pt 16pt;
 }
 
-/* ─── Decorative circles (match the show view blobs) ───────────────────── */
+/* ── Full-bleed background layer ── */
+.bg-fill {
+    position: absolute;
+    top: 0; left: 0;
+    width: 241.89pt;
+    height: 153.07pt;
+    background: {{ $bgColor }};
+}
+
+/* ── Decorative circles (match show.blade.php exactly) ── */
+/* show: top:-30px right:-30px 120px blob @ .20 opacity */
+/* show: bottom:-40px left:-20px 160px blob @ .10 opacity */
+/* Scale factor ≈ 241.89/380 = 0.637                       */
 .blob1 {
-    position: absolute; top: -18pt; right: -18pt;
-    width: 78pt; height: 78pt; border-radius: 39pt;
+    position: absolute;
+    top: -19pt; right: -19pt;
+    width: 76pt; height: 76pt; border-radius: 38pt;
     background: {{ $accent }}; opacity: 0.20;
 }
 .blob2 {
-    position: absolute; bottom: -30pt; left: -14pt;
-    width: 108pt; height: 108pt; border-radius: 54pt;
-    background: {{ $accent }}; opacity: 0.12;
+    position: absolute;
+    bottom: -25pt; left: -13pt;
+    width: 102pt; height: 102pt; border-radius: 51pt;
+    background: {{ $accent }}; opacity: 0.10;
 }
 
-/* ─── Header: avatar | name block (table, not flex) ────────────────────── */
-.hdr { border-collapse: collapse; width: 100%; margin-bottom: 7pt; }
-.av-cell   { width: 48pt; vertical-align: middle; }
+/* ── Outer content wrapper ── */
+.wrap {
+    position: relative;
+    width: 241.89pt;
+    height: 153.07pt;
+    padding: 15pt 16pt 13pt 16pt;
+}
+
+/* ── Header: avatar cell | info cell (table, no flex) ── */
+.hdr       { border-collapse: collapse; width: 100%; margin-bottom: 7pt; }
+.av-cell   { width: 50pt; vertical-align: middle; }
 .info-cell { vertical-align: middle; padding-left: 10pt; }
 
-/* Avatar initials circle */
+/* Initials circle */
 .av-circle {
     width: 42pt; height: 42pt; border-radius: 21pt;
     background: {{ $accent }};
+    border: 2.5pt solid {{ $accent }};
     text-align: center; line-height: 42pt;
     font-size: 17pt; font-weight: 700; color: #ffffff;
-    border: 2pt solid {{ $accent }};
 }
-/* Avatar photo */
+/* Photo circle */
 .av-photo {
     width: 42pt; height: 42pt; border-radius: 21pt;
     border: 2.5pt solid {{ $accent }};
 }
 
-.c-name    { font-size: 13pt; font-weight: 700; line-height: 1.2; }
-.c-title   { font-size: 7.5pt; opacity: 0.80; margin-top: 1.5pt; }
-.c-company { font-size: 7pt; font-weight: 700; margin-top: 2pt; color: {{ $accent }}; }
+.c-name    { font-size: 13.5pt; font-weight: 700; line-height: 1.2; color: {{ $txtColor }}; }
+.c-title   { font-size: 7.5pt;  opacity: 0.80; margin-top: 2pt;  color: {{ $txtColor }}; }
+.c-company { font-size: 7pt;    font-weight: 700; margin-top: 2pt; color: {{ $accent }}; }
 
-/* ─── Divider ───────────────────────────────────────────────────────────── */
-.divider { height: 0.5pt; background: rgba(255,255,255,0.22); margin-bottom: 6pt; }
-
-/* ─── Contact info — 2-column table matching the show grid ─────────────── */
-/*   Stops short of the QR area (last ~54pt of width)                       */
-.ct {
-    border-collapse: collapse;
-    width: 172pt; /* leaves 54pt for QR box on the right */
+/* ── Divider (uses template's divider_color) ── */
+.divider {
+    height: 0.5pt;
+    background: {{ $divColor }};
+    opacity: 0.35;
+    margin-bottom: 6pt;
 }
-.ct td { padding: 1.2pt 0; vertical-align: middle; font-size: 7pt; opacity: 0.90; }
-.ct .ico { width: 11pt; color: {{ $accent }}; }
-.ct .val { padding-right: 10pt; }
 
-/* ─── QR code ───────────────────────────────────────────────────────────── */
+/* ── Contact info: 2-column table (mirrors the 2-col grid in show view) ── */
+/* Max-width leaves ~56pt clear on the right for the QR box                  */
+.ct        { border-collapse: collapse; width: 170pt; }
+.ct td     { padding: 1.2pt 0; vertical-align: middle; font-size: 7pt; color: {{ $txtColor }}; opacity: 0.90; }
+.ct .ico   { width: 11pt; color: {{ $accent }}; opacity: 1; }
+.ct .val   { padding-right: 8pt; }
+.ct .sep   { width: 4pt; }
+
+/* ── QR code box ── */
 .qr-box {
-    position: absolute; bottom: 11pt; right: 13pt;
+    position: absolute;
+    bottom: 11pt; right: 12pt;
     background: #ffffff;
     border-radius: 5pt;
     padding: 3pt;
-    width: 44pt; height: 44pt;
+    width: 46pt; height: 46pt;
 }
 </style>
 </head>
 <body>
-<div class="wrap">
 
+{{-- Full-bleed background (ensures edge-to-edge color, even past default DomPDF insets) --}}
+<div class="bg-fill"></div>
+
+<div class="wrap">
     <div class="blob1"></div>
     <div class="blob2"></div>
 
@@ -124,39 +153,49 @@ html, body {
 
     <div class="divider"></div>
 
-    {{-- Contact info — 2 columns matching the on-screen grid --}}
+    {{-- Contact: two columns matching the on-screen 2-col grid --}}
     <table class="ct">
         @if($email || $phone)
         <tr>
             @if($email)
-            <td class="ico">&#9993;</td>
-            <td class="val">{{ $email }}</td>
+                <td class="ico">&#9993;</td>
+                <td class="val">{{ $email }}</td>
+            @else
+                <td class="ico"></td><td class="val"></td>
             @endif
+            <td class="sep"></td>
             @if($phone)
-            <td class="ico" style="padding-left:8pt;">&#9743;</td>
-            <td class="val">{{ $phone }}</td>
+                <td class="ico">&#9743;</td>
+                <td class="val">{{ $phone }}</td>
+            @else
+                <td class="ico"></td><td class="val"></td>
             @endif
         </tr>
         @endif
         @if($website || $linkedin)
         <tr>
             @if($website)
-            <td class="ico">&#127760;</td>
-            <td class="val">{{ $website }}</td>
+                <td class="ico">&#127760;</td>
+                <td class="val">{{ $website }}</td>
+            @else
+                <td class="ico"></td><td class="val"></td>
             @endif
+            <td class="sep"></td>
             @if($linkedin)
-            <td class="ico" style="padding-left:8pt;font-weight:700;">in</td>
-            <td class="val">{{ $linkedin }}</td>
+                <td class="ico" style="font-weight:700;">in</td>
+                <td class="val">{{ $linkedin }}</td>
+            @else
+                <td class="ico"></td><td class="val"></td>
             @endif
         </tr>
         @endif
     </table>
 
-    {{-- QR code — embedded as base64 SVG data URI (works in DomPDF) --}}
+    {{-- QR code: base64 SVG data URI — the only reliable method in DomPDF --}}
     @if($qrCode)
     <div class="qr-box">
         <img src="data:image/svg+xml;base64,{{ base64_encode($qrCode) }}"
-             width="38" height="38">
+             width="40" height="40">
     </div>
     @endif
 

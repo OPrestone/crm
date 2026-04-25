@@ -9,21 +9,23 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // ── Disable FK constraints so truncation is re-runnable ───────────
         $driver = DB::getDriverName();
-        if ($driver === 'sqlite') {
-            DB::statement('PRAGMA foreign_keys = OFF');
-        } else {
-            DB::statement('SET FOREIGN_KEY_CHECKS = 0');
-        }
 
-        // ── All data tables (system/laravel tables excluded) ──────────────
+        // ── Disable FK constraints (driver-aware) ─────────────────────────
+        match ($driver) {
+            'sqlite' => DB::statement('PRAGMA foreign_keys = OFF'),
+            'mysql'  => DB::statement('SET FOREIGN_KEY_CHECKS = 0'),
+            'pgsql'  => DB::statement("SET session_replication_role = 'replica'"),
+            default  => null,
+        };
+
+        // ── All data tables in reverse-dependency order ───────────────────
         $tables = [
-            // Spatie permission pivot tables first
+            // Spatie permission pivot tables
             'model_has_permissions', 'role_has_permissions', 'model_has_roles',
             'permissions', 'roles',
 
-            // Module data tables (reverse dependency order)
+            // Module data tables
             'webhook_deliveries',
             'developer_apps',
             'territory_user', 'territories',
@@ -52,14 +54,21 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($tables as $table) {
-            DB::table($table)->truncate();
+            // PostgreSQL TRUNCATE supports RESTART IDENTITY to reset sequences
+            if ($driver === 'pgsql') {
+                DB::statement("TRUNCATE TABLE \"{$table}\" RESTART IDENTITY CASCADE");
+            } else {
+                DB::table($table)->truncate();
+            }
         }
 
-        if ($driver === 'sqlite') {
-            DB::statement('PRAGMA foreign_keys = ON');
-        } else {
-            DB::statement('SET FOREIGN_KEY_CHECKS = 1');
-        }
+        // ── Re-enable FK constraints ──────────────────────────────────────
+        match ($driver) {
+            'sqlite' => DB::statement('PRAGMA foreign_keys = ON'),
+            'mysql'  => DB::statement('SET FOREIGN_KEY_CHECKS = 1'),
+            'pgsql'  => DB::statement("SET session_replication_role = 'default'"),
+            default  => null,
+        };
 
         // ── Seed in dependency order ──────────────────────────────────────
         $this->call([

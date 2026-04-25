@@ -75,10 +75,10 @@
                             </div>
                             @if($tenant->logo)
                             <div class="col-md-3">
-                                <form method="POST" action="{{ route('settings.branding.removeLogo') }}" onsubmit="return confirm('Remove logo?')">
-                                    @csrf @method('DELETE')
-                                    <button type="submit" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash me-1"></i>Remove Logo</button>
-                                </form>
+                                <button type="button" class="btn btn-outline-danger btn-sm"
+                                        onclick="if(confirm('Remove logo?')) document.getElementById('removeLogoForm').submit()">
+                                    <i class="bi bi-trash me-1"></i>Remove Logo
+                                </button>
                             </div>
                             @endif
                         </div>
@@ -185,6 +185,13 @@
             </div>
         </div>
         </form>
+
+        {{-- Standalone remove-logo form (outside the main form to avoid nesting) --}}
+        @if($tenant->logo)
+        <form id="removeLogoForm" method="POST" action="{{ route('settings.branding.removeLogo') }}" style="display:none;">
+            @csrf @method('DELETE')
+        </form>
+        @endif
 
         <style>
             .sidebar-style-option {

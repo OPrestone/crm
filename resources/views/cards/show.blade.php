@@ -56,8 +56,10 @@
                         @endif
                     </div>
                     @if($qrCode)
-                    <div style="position:absolute;bottom:16px;right:20px;">
-                        <img src="data:image/png;base64,{{ $qrCode }}" style="width:56px;height:56px;border-radius:6px;background:white;padding:4px;" title="Scan to save contact">
+                    <div style="position:absolute;bottom:16px;right:20px;" title="Scan to save contact">
+                        <div style="width:56px;height:56px;border-radius:6px;background:white;padding:4px;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+                            <div style="width:48px;height:48px;">{!! $qrCode !!}</div>
+                        </div>
                     </div>
                     @endif
                 </div>
@@ -68,7 +70,9 @@
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-transparent pt-4 px-4"><h5 class="fw-700 mb-0"><i class="bi bi-qr-code me-2"></i>QR Code — Scan to Save Contact</h5></div>
             <div class="card-body p-4 d-flex gap-4 align-items-start">
-                <img src="data:image/png;base64,{{ $qrCode }}" style="width:160px;height:160px;border-radius:12px;border:1px solid #e5e7eb;padding:8px;background:white;flex-shrink:0;">
+                <div style="width:160px;height:160px;border-radius:12px;border:1px solid #e5e7eb;padding:8px;background:white;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+                    <div style="width:144px;height:144px;">{!! $qrCode !!}</div>
+                </div>
                 <div>
                     <p class="text-muted mb-3" style="font-size:14px;">Scan with any phone camera to save contact details. Encoded as vCard 3.0 standard (compatible with all address books).</p>
                     <pre class="bg-light rounded p-3 mb-0" style="font-size:11px;max-height:120px;overflow:auto;white-space:pre-wrap;">{{ $card->qr_data }}</pre>

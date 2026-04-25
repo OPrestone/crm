@@ -82,7 +82,7 @@ body { font-family: DejaVu Sans, Arial, sans-serif; background:#f0f0f0; padding:
 
     @if($qrCode)
     <div class="qr-box">
-        <img src="data:image/png;base64,{{ $qrCode }}" width="46" height="46">
+        <div style="width:46px;height:46px;overflow:hidden;">{!! $qrCode !!}</div>
     </div>
     @endif
 </div>

@@ -91,7 +91,9 @@ class CardController extends Controller
 
         $qrCode = null;
         if ($card->qr_data) {
-            $qrCode = base64_encode(QrCode::format('png')->size(180)->margin(1)->generate($card->qr_data));
+            $svg = (string) QrCode::format('svg')->size(180)->margin(1)->generate($card->qr_data);
+            $qrCode = preg_replace('/(<svg[^>]*)\s+width="\d+"/', '$1 width="100%"', $svg);
+            $qrCode = preg_replace('/(<svg[^>]*)\s+height="\d+"/', '$1 height="100%"', $qrCode);
         }
 
         return view('cards.show', compact('card', 'qrCode'));
@@ -156,7 +158,9 @@ class CardController extends Controller
 
         $qrCode = null;
         if ($card->qr_data) {
-            $qrCode = base64_encode(QrCode::format('png')->size(150)->margin(1)->generate($card->qr_data));
+            $svg = (string) QrCode::format('svg')->size(150)->margin(1)->generate($card->qr_data);
+            $qrCode = preg_replace('/(<svg[^>]*)\s+width="\d+"/', '$1 width="100%"', $svg);
+            $qrCode = preg_replace('/(<svg[^>]*)\s+height="\d+"/', '$1 height="100%"', $qrCode);
         }
 
         $photoBase64 = null;

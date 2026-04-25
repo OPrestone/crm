@@ -42,7 +42,7 @@
                 <hr class="flex-grow-1 m-0" style="border-color:#e2e8f0;">
             </div>
             <div class="d-flex flex-column gap-2">
-                <button type="button"
+                <!-- <button type="button"
                         class="demo-account-btn"
                         onclick="fillDemo('admin@crm.io','password')">
                     <span class="demo-avatar demo-avatar-purple">
@@ -53,7 +53,7 @@
                         <span class="demo-email">admin@crm.io</span>
                     </span>
                     <span class="demo-badge">Super Admin</span>
-                </button>
+                </button> -->
                 <button type="button"
                         class="demo-account-btn"
                         onclick="fillDemo('demo@acme.com','password')">

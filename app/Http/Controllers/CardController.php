@@ -169,8 +169,17 @@ class CardController extends Controller
             $photoBase64 = "data:{$mime};base64," . base64_encode($photoData);
         }
 
+        // Business card: ISO ID-1 / CR80 — 85.6 mm × 54 mm in points (1pt = 1/72 inch)
         $pdf = Pdf::loadView('cards.pdf', compact('card', 'qrCode', 'photoBase64'))
-            ->setPaper('a4', 'portrait');
+            ->setOptions([
+                'margin_top'    => 0,
+                'margin_right'  => 0,
+                'margin_bottom' => 0,
+                'margin_left'   => 0,
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled'      => false,
+            ])
+            ->setPaper([0, 0, 241.89, 153.07]);
         return $pdf->stream("card-{$card->id}.pdf");
     }
 }

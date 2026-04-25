@@ -189,7 +189,7 @@ Execution order (each seeder queries DB for its dependencies, no shared state):
 | 14 | `TicketSeeder` | 10 tickets + 19 replies |
 | 15 | `DocumentSeeder` | 10 documents (polymorphic to contacts/companies/deals) |
 | 16 | `GoalSeeder` | 8 goals (revenue, deals_won, leads_created, etc.) |
-| 17 | `CardSeeder` | 4 card templates + 7 cards |
+| 17 | `CardSeeder` | 19 card templates (8 business, 4 event, 4 membership, 3 ID) + 10 cards |
 | 18 | `NotificationSeeder` | 16 CRM notifications |
 | 19 | `EmailCampaignSeeder` | 5 campaigns + 45 recipient records |
 | 20 | `WebFormSeeder` | 3 forms + 9 submissions |

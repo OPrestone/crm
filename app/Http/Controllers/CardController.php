@@ -158,9 +158,8 @@ class CardController extends Controller
 
         $qrCode = null;
         if ($card->qr_data) {
-            $svg = (string) QrCode::format('svg')->size(150)->margin(1)->generate($card->qr_data);
-            $qrCode = preg_replace('/(<svg[^>]*)\s+width="\d+"/', '$1 width="100%"', $svg);
-            $qrCode = preg_replace('/(<svg[^>]*)\s+height="\d+"/', '$1 height="100%"', $qrCode);
+            // Raw SVG string — template embeds it as a base64 data URI so DomPDF renders it
+            $qrCode = (string) QrCode::format('svg')->size(200)->margin(1)->generate($card->qr_data);
         }
 
         $photoBase64 = null;
@@ -171,7 +170,7 @@ class CardController extends Controller
         }
 
         $pdf = Pdf::loadView('cards.pdf', compact('card', 'qrCode', 'photoBase64'))
-            ->setPaper([0, 0, 241.89, 153.07]);
+            ->setPaper('a4', 'portrait');
         return $pdf->stream("card-{$card->id}.pdf");
     }
 }

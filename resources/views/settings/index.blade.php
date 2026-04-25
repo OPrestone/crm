@@ -2,13 +2,15 @@
 @section('title', 'Settings')
 @section('page-title', 'Settings')
 @section('content')
+@php $activeTab = request('tab', 'company'); @endphp
 <ul class="nav nav-tabs mb-4" id="settingsTabs">
-    <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#s-company">Company</a></li>
-    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#s-users">Users</a></li>
-    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#s-pipeline">Pipeline Stages</a></li>
+    <li class="nav-item"><a class="nav-link {{ $activeTab === 'company'  ? 'active' : '' }}" data-bs-toggle="tab" href="#s-company"><i class="bi bi-building me-1"></i>Company</a></li>
+    <li class="nav-item"><a class="nav-link {{ $activeTab === 'branding' ? 'active' : '' }}" data-bs-toggle="tab" href="#s-branding"><i class="bi bi-palette me-1"></i>Branding</a></li>
+    <li class="nav-item"><a class="nav-link {{ $activeTab === 'users'    ? 'active' : '' }}" data-bs-toggle="tab" href="#s-users"><i class="bi bi-people me-1"></i>Users</a></li>
+    <li class="nav-item"><a class="nav-link {{ $activeTab === 'pipeline' ? 'active' : '' }}" data-bs-toggle="tab" href="#s-pipeline"><i class="bi bi-funnel me-1"></i>Pipeline Stages</a></li>
 </ul>
 <div class="tab-content">
-    <div class="tab-pane fade show active" id="s-company">
+    <div class="tab-pane fade {{ $activeTab === 'company' ? 'show active' : '' }}" id="s-company">
         <div class="row g-4">
             <div class="col-lg-8">
                 <div class="card"><div class="card-header bg-transparent pt-4 px-4"><h5 class="fw-700 mb-0">Company Settings</h5></div>
@@ -46,7 +48,197 @@
         </div>
     </div>
 
-    <div class="tab-pane fade" id="s-users">
+    {{-- ── Branding Tab ──────────────────────────────────────────────── --}}
+    <div class="tab-pane fade {{ $activeTab === 'branding' ? 'show active' : '' }}" id="s-branding">
+        <form method="POST" action="{{ route('settings.branding') }}" enctype="multipart/form-data">
+        @csrf
+        <div class="row g-4">
+            {{-- Logo --}}
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-transparent pt-4 px-4"><h5 class="fw-700 mb-0"><i class="bi bi-image me-2"></i>Logo</h5></div>
+                    <div class="card-body px-4">
+                        <div class="row align-items-center g-3">
+                            <div class="col-md-2 text-center">
+                                @if($tenant->logo)
+                                    <img src="{{ Storage::url($tenant->logo) }}" alt="Logo" style="max-height:80px;max-width:160px;object-fit:contain;border-radius:8px;border:1px solid #e5e7eb;padding:8px;">
+                                @else
+                                    <div style="width:80px;height:80px;border-radius:12px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;margin:auto;">
+                                        <i class="bi bi-building" style="font-size:32px;color:#94a3b8;"></i>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="col-md-7">
+                                <label class="form-label fw-600">Upload Logo</label>
+                                <input type="file" name="logo" class="form-control" accept="image/png,image/jpeg,image/jpg,image/svg+xml,image/webp">
+                                <div class="form-text">PNG, JPG, SVG or WEBP — max 2 MB. Recommended: 200 × 60 px, transparent background.</div>
+                            </div>
+                            @if($tenant->logo)
+                            <div class="col-md-3">
+                                <form method="POST" action="{{ route('settings.branding.removeLogo') }}" onsubmit="return confirm('Remove logo?')">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash me-1"></i>Remove Logo</button>
+                                </form>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Colors --}}
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-header bg-transparent pt-4 px-4"><h5 class="fw-700 mb-0"><i class="bi bi-palette me-2"></i>Brand Colors</h5></div>
+                    <div class="card-body px-4">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-600">Primary Color</label>
+                                <div class="d-flex gap-2 align-items-center">
+                                    <input type="color" name="primary_color" id="primaryColor" class="form-control form-control-color" value="{{ $tenant->primary_color ?? '#0d6efd' }}" style="width:48px;height:42px;">
+                                    <input type="text" id="primaryHex" class="form-control" value="{{ $tenant->primary_color ?? '#0d6efd' }}" maxlength="7" pattern="#[0-9A-Fa-f]{6}" placeholder="#0d6efd" oninput="syncColor(this,'primaryColor')">
+                                </div>
+                                <div class="form-text">Buttons, links, highlights</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-600">Accent Color</label>
+                                <div class="d-flex gap-2 align-items-center">
+                                    <input type="color" name="accent_color" id="accentColor" class="form-control form-control-color" value="{{ $tenant->accent_color ?? '#0d6efd' }}" style="width:48px;height:42px;">
+                                    <input type="text" id="accentHex" class="form-control" value="{{ $tenant->accent_color ?? '#0d6efd' }}" maxlength="7" pattern="#[0-9A-Fa-f]{6}" placeholder="#0d6efd" oninput="syncColor(this,'accentColor')">
+                                </div>
+                                <div class="form-text">Secondary highlights, badges</div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-600 mb-2">Quick Presets</label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    @foreach(['#0d6efd'=>'Blue','#7c3aed'=>'Purple','#059669'=>'Green','#dc2626'=>'Red','#d97706'=>'Amber','#0891b2'=>'Cyan','#db2777'=>'Pink','#1e293b'=>'Slate'] as $hex => $label)
+                                    <button type="button" class="color-preset-btn" style="width:30px;height:30px;border-radius:50%;background:{{ $hex }};border:2px solid transparent;cursor:pointer;transition:all .15s;" title="{{ $label }}" onclick="applyPreset('{{ $hex }}')"></button>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Style --}}
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-header bg-transparent pt-4 px-4"><h5 class="fw-700 mb-0"><i class="bi bi-layout-sidebar me-2"></i>Appearance</h5></div>
+                    <div class="card-body px-4">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label fw-600">Sidebar Style</label>
+                                <div class="d-flex gap-3">
+                                    <label class="sidebar-style-option {{ ($tenant->sidebar_style ?? 'dark') === 'dark' ? 'selected' : '' }}" for="sidebar_dark">
+                                        <input type="radio" name="sidebar_style" id="sidebar_dark" value="dark" class="d-none" {{ ($tenant->sidebar_style ?? 'dark') === 'dark' ? 'checked' : '' }}>
+                                        <div class="sidebar-preview sidebar-preview-dark">
+                                            <div class="sp-side"></div><div class="sp-main"></div>
+                                        </div>
+                                        <span style="font-size:12px;font-weight:600;">Dark</span>
+                                    </label>
+                                    <label class="sidebar-style-option {{ ($tenant->sidebar_style ?? 'dark') === 'light' ? 'selected' : '' }}" for="sidebar_light">
+                                        <input type="radio" name="sidebar_style" id="sidebar_light" value="light" class="d-none" {{ ($tenant->sidebar_style ?? 'dark') === 'light' ? 'checked' : '' }}>
+                                        <div class="sidebar-preview sidebar-preview-light">
+                                            <div class="sp-side"></div><div class="sp-main"></div>
+                                        </div>
+                                        <span style="font-size:12px;font-weight:600;">Light</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-600">Font Family</label>
+                                <select name="font_family" class="form-select">
+                                    <option value="system"  {{ ($tenant->font_family ?? 'system')  === 'system'  ? 'selected' : '' }}>System Default</option>
+                                    <option value="inter"   {{ ($tenant->font_family ?? 'system')  === 'inter'   ? 'selected' : '' }}>Inter (Modern Sans)</option>
+                                    <option value="poppins" {{ ($tenant->font_family ?? 'system')  === 'poppins' ? 'selected' : '' }}>Poppins (Friendly)</option>
+                                    <option value="georgia" {{ ($tenant->font_family ?? 'system')  === 'georgia' ? 'selected' : '' }}>Georgia (Classic Serif)</option>
+                                </select>
+                                <div class="form-text">Applied across all CRM pages for your team</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Preview strip --}}
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-transparent pt-4 px-4"><h5 class="fw-700 mb-0"><i class="bi bi-eye me-2"></i>Live Preview</h5></div>
+                    <div class="card-body px-4">
+                        <div class="d-flex flex-wrap align-items-center gap-3">
+                            <button type="button" class="btn btn-primary preview-btn">Primary Button</button>
+                            <button type="button" class="btn btn-outline-primary preview-btn-outline">Outline Button</button>
+                            <span class="badge preview-badge" style="padding:6px 12px;border-radius:20px;font-size:13px;color:#fff;">Badge</span>
+                            <a href="#" class="preview-link text-primary text-decoration-none fw-600">Sample Link</a>
+                            <div class="progress flex-grow-1" style="height:8px;border-radius:8px;min-width:120px;">
+                                <div class="progress-bar preview-bar" role="progressbar" style="width:65%;background:var(--bs-primary,#0d6efd);border-radius:8px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary px-4"><i class="bi bi-check-lg me-2"></i>Save Branding</button>
+                <span class="text-muted ms-3" style="font-size:13px;">Changes take effect immediately for all team members.</span>
+            </div>
+        </div>
+        </form>
+
+        <style>
+            .sidebar-style-option {
+                display: flex; flex-direction: column; align-items: center; gap: 6px;
+                cursor: pointer; padding: 8px; border-radius: 10px; border: 2px solid #e5e7eb; transition: all .15s;
+            }
+            .sidebar-style-option.selected, .sidebar-style-option:hover { border-color: #0d6efd; background: #eff6ff; }
+            .sidebar-preview { display: flex; border-radius: 6px; overflow: hidden; border: 1px solid #e5e7eb; width: 80px; height: 52px; }
+            .sidebar-preview-dark .sp-side  { width: 24px; background: #0f172a; }
+            .sidebar-preview-dark .sp-main  { flex: 1; background: #f0f4f8; }
+            .sidebar-preview-light .sp-side { width: 24px; background: #ffffff; border-right: 1px solid #e5e7eb; }
+            .sidebar-preview-light .sp-main { flex: 1; background: #f0f4f8; }
+            .color-preset-btn:hover { transform: scale(1.2); border-color: #333 !important; }
+        </style>
+        <script>
+            function syncColor(textInput, colorId) {
+                const val = textInput.value;
+                if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+                    document.getElementById(colorId).value = val;
+                    updatePreview();
+                }
+            }
+            document.getElementById('primaryColor').addEventListener('input', function() {
+                document.getElementById('primaryHex').value = this.value;
+                updatePreview();
+            });
+            document.getElementById('accentColor').addEventListener('input', function() {
+                document.getElementById('accentHex').value = this.value;
+            });
+            function applyPreset(hex) {
+                document.getElementById('primaryColor').value = hex;
+                document.getElementById('primaryHex').value  = hex;
+                updatePreview();
+            }
+            function updatePreview() {
+                const color = document.getElementById('primaryColor').value;
+                document.querySelectorAll('.preview-btn').forEach(el => el.style.background = color);
+                document.querySelectorAll('.preview-btn').forEach(el => el.style.borderColor = color);
+                document.querySelectorAll('.preview-btn-outline').forEach(el => { el.style.color = color; el.style.borderColor = color; });
+                document.querySelectorAll('.preview-badge').forEach(el => el.style.background = color);
+                document.querySelectorAll('.preview-link').forEach(el => el.style.color = color);
+                document.querySelectorAll('.preview-bar').forEach(el => el.style.background = color);
+            }
+            document.querySelectorAll('.sidebar-style-option').forEach(opt => {
+                opt.addEventListener('click', () => {
+                    document.querySelectorAll('.sidebar-style-option').forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    opt.querySelector('input').checked = true;
+                });
+            });
+        </script>
+    </div>
+
+    <div class="tab-pane fade {{ $activeTab === 'users' ? 'show active' : '' }}" id="s-users">
         <div class="row g-4">
             <div class="col-lg-8">
                 <div class="card mb-4"><div class="card-header bg-transparent pt-4 px-4 d-flex align-items-center justify-content-between">
@@ -98,7 +290,7 @@
         </div>
     </div>
 
-    <div class="tab-pane fade" id="s-pipeline">
+    <div class="tab-pane fade {{ $activeTab === 'pipeline' ? 'show active' : '' }}" id="s-pipeline">
         <div class="row g-4">
             <div class="col-lg-6">
                 <div class="card mb-4"><div class="card-header bg-transparent pt-4 px-4 d-flex justify-content-between align-items-center">

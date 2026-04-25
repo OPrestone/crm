@@ -12,7 +12,8 @@ class Tenant extends Model
         'name', 'slug', 'email', 'phone', 'website', 'address', 'industry',
         'plan', 'status', 'max_users', 'max_contacts', 'currency', 'timezone',
         'subdomain', 'custom_domain', 'domain_status', 'domain_txt_record', 'domain_verified_at',
-        'primary_color', 'accent_color', 'email_notifications',
+        'logo', 'primary_color', 'accent_color', 'sidebar_style', 'font_family',
+        'dark_mode', 'email_notifications',
         'smtp_host', 'smtp_port', 'smtp_user', 'smtp_pass', 'smtp_from_name', 'smtp_from_email', 'smtp_encryption',
     ];
 

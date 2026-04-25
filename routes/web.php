@@ -179,6 +179,8 @@ Route::middleware('auth')->group(function () {
         Route::delete('/settings/users/{user}', [SettingsController::class, 'destroyUser'])->name('settings.destroyUser');
         Route::post('/settings/stages', [SettingsController::class, 'storeStage'])->name('settings.storeStage');
         Route::delete('/settings/stages/{stage}', [SettingsController::class, 'destroyStage'])->name('settings.destroyStage');
+        Route::post('/settings/branding', [SettingsController::class, 'updateBranding'])->name('settings.branding');
+        Route::delete('/settings/branding/logo', [SettingsController::class, 'removeLogo'])->name('settings.branding.removeLogo');
 
         // Domain & Email settings
         Route::get('/settings/domain', [DomainController::class, 'index'])->name('settings.domain.index');

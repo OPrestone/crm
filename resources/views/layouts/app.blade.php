@@ -9,12 +9,51 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/bootstrap-icons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
     @stack('styles')
+    @php $__tenant = auth()->user()?->tenant; @endphp
+    @if($__tenant && ($__tenant->primary_color || $__tenant->accent_color || $__tenant->font_family !== 'system'))
+    @php
+        $__primary = $__tenant->primary_color ?: '#0d6efd';
+        $__accent  = $__tenant->accent_color  ?: '#0d6efd';
+        $__fonts   = ['inter'=>'Inter', 'poppins'=>'Poppins', 'georgia'=>'Georgia,serif', 'system'=>''];
+        $__font    = $__fonts[$__tenant->font_family ?? 'system'] ?? '';
+        // Convert hex to R,G,B for Bootstrap's rgb() utilities
+        [$__pr, $__pg, $__pb] = sscanf($__primary, '#%02x%02x%02x');
+        [$__ar, $__ag, $__ab] = sscanf($__accent,  '#%02x%02x%02x');
+    @endphp
+    @if(in_array($__tenant->font_family, ['inter','poppins']))
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{ urlencode($__font) }}:wght@300;400;500;600;700&display=swap">
+    @endif
+    <style>
+        :root {
+            --bs-primary:           {{ $__primary }};
+            --bs-primary-rgb:       {{ $__pr }},{{ $__pg }},{{ $__pb }};
+            --bs-link-color:        {{ $__primary }};
+            --bs-link-hover-color:  {{ $__primary }};
+            --crm-accent:           {{ $__accent }};
+            --crm-accent-rgb:       {{ $__ar }},{{ $__ag }},{{ $__ab }};
+            @if($__font) --bs-body-font-family: '{{ $__fonts[$__tenant->font_family] }}', sans-serif; @endif
+        }
+        .btn-primary, .bg-primary { background-color: {{ $__primary }} !important; border-color: {{ $__primary }} !important; }
+        .text-primary { color: {{ $__primary }} !important; }
+        .border-primary { border-color: {{ $__primary }} !important; }
+        .btn-outline-primary { color: {{ $__primary }} !important; border-color: {{ $__primary }} !important; }
+        .btn-outline-primary:hover { background-color: {{ $__primary }} !important; color: #fff !important; }
+        .nav-link.active, .nav-pills .nav-link.active { background-color: {{ $__primary }} !important; }
+        a { color: {{ $__primary }}; }
+    </style>
+    @endif
 </head>
 <body>
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
-<nav class="sidebar">
+@php $__sidebarTenant = auth()->user()?->tenant; $__sidebarStyle = $__sidebarTenant?->sidebar_style ?? 'dark'; @endphp
+<nav class="sidebar sidebar-{{ $__sidebarStyle }}">
     <a href="{{ route('dashboard') }}" class="sidebar-brand">
-        <div class="brand-icon">C</div>
+        @if($__sidebarTenant?->logo)
+            <img src="{{ Storage::url($__sidebarTenant->logo) }}" alt="{{ $__sidebarTenant->name }}" class="brand-logo" style="height:36px;width:auto;max-width:120px;object-fit:contain;">
+        @else
+            <div class="brand-icon">{{ Str::upper(Str::substr($__sidebarTenant?->name ?? 'C', 0, 1)) }}</div>
+        @endif
         <div>
             <div class="brand-name">{{ Str::limit(auth()->user()?->tenant?->name ?? 'CRM', 16) }}</div>
             <div class="brand-sub">ENTERPRISE CRM</div>

@@ -111,6 +111,25 @@ body {
   flex-shrink: 0;
 }
 
+/* ── Sidebar light variant ── */
+.sidebar-light {
+  background: #ffffff;
+  border-right: 1px solid #e5e7eb;
+}
+.sidebar-light .sidebar-brand {
+  border-bottom-color: #e5e7eb;
+}
+.sidebar-light .brand-name { color: #1e293b; }
+.sidebar-light .brand-sub  { color: #94a3b8; }
+.sidebar-light .sidebar-section { color: #94a3b8; }
+.sidebar-light .nav-item-link { color: #475569; }
+.sidebar-light .nav-item-link:hover { background: #f1f5f9; color: #1e293b; }
+.sidebar-light .nav-item-link.active { background: rgba(13,110,253,.1); color: var(--color-primary); }
+.sidebar-light .sidebar-footer { border-top-color: #e5e7eb; }
+.sidebar-light .sidebar-footer .text-white { color: #1e293b !important; }
+.sidebar-light .sidebar-footer .text-white.fw-600 { color: #1e293b !important; }
+.sidebar-light .sidebar-footer [style*="color:rgba(255,255,255"] { color: #64748b !important; }
+
 /* ── Main Layout ── */
 .main-wrapper {
   margin-left: var(--sidebar-width);

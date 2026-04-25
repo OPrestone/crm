@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 
 class SettingsController extends Controller
@@ -91,5 +92,48 @@ class SettingsController extends Controller
         abort_if($stage->tenant_id !== $this->tid(), 403);
         $stage->delete();
         return redirect()->route('settings.index')->with('success', 'Stage removed.');
+    }
+
+    public function updateBranding(Request $request)
+    {
+        $tenant = Auth::user()->tenant;
+
+        $request->validate([
+            'primary_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
+            'accent_color'  => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
+            'sidebar_style' => 'nullable|in:dark,light',
+            'font_family'   => 'nullable|in:system,inter,poppins,georgia',
+            'logo'          => 'nullable|image|mimes:png,jpg,jpeg,svg,webp|max:2048',
+        ]);
+
+        $update = array_filter([
+            'primary_color' => $request->primary_color,
+            'accent_color'  => $request->accent_color,
+            'sidebar_style' => $request->sidebar_style,
+            'font_family'   => $request->font_family,
+        ], fn($v) => $v !== null);
+
+        if ($request->hasFile('logo')) {
+            if ($tenant->logo) {
+                Storage::disk('public')->delete($tenant->logo);
+            }
+            $update['logo'] = $request->file('logo')->store('logos', 'public');
+        }
+
+        $tenant->update($update);
+
+        return redirect()->route('settings.index', ['tab' => 'branding'])
+            ->with('success', 'Branding settings saved!');
+    }
+
+    public function removeLogo()
+    {
+        $tenant = Auth::user()->tenant;
+        if ($tenant->logo) {
+            Storage::disk('public')->delete($tenant->logo);
+            $tenant->update(['logo' => null]);
+        }
+        return redirect()->route('settings.index', ['tab' => 'branding'])
+            ->with('success', 'Logo removed.');
     }
 }

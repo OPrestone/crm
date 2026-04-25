@@ -136,4 +136,21 @@ class SettingsController extends Controller
         return redirect()->route('settings.index', ['tab' => 'branding'])
             ->with('success', 'Logo removed.');
     }
+
+    public function resetBranding()
+    {
+        $tenant = Auth::user()->tenant;
+        if ($tenant->logo) {
+            Storage::disk('public')->delete($tenant->logo);
+        }
+        $tenant->update([
+            'logo'          => null,
+            'primary_color' => null,
+            'accent_color'  => null,
+            'sidebar_style' => 'dark',
+            'font_family'   => 'system',
+        ]);
+        return redirect()->route('settings.index', ['tab' => 'branding'])
+            ->with('success', 'Branding reset to defaults.');
+    }
 }

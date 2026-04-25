@@ -179,19 +179,26 @@
                 </div>
             </div>
 
-            <div class="col-12">
+            <div class="col-12 d-flex align-items-center gap-3 flex-wrap">
                 <button type="submit" class="btn btn-primary px-4"><i class="bi bi-check-lg me-2"></i>Save Branding</button>
-                <span class="text-muted ms-3" style="font-size:13px;">Changes take effect immediately for all team members.</span>
+                <button type="button" class="btn btn-outline-secondary"
+                        onclick="if(confirm('Reset all branding to defaults? This will remove your logo, colours, and font choices.')) document.getElementById('resetBrandingForm').submit()">
+                    <i class="bi bi-arrow-counterclockwise me-1"></i>Reset to Default
+                </button>
+                <span class="text-muted" style="font-size:13px;">Changes take effect immediately for all team members.</span>
             </div>
         </div>
         </form>
 
-        {{-- Standalone remove-logo form (outside the main form to avoid nesting) --}}
+        {{-- Standalone helper forms (outside the main form — HTML forbids nested forms) --}}
         @if($tenant->logo)
         <form id="removeLogoForm" method="POST" action="{{ route('settings.branding.removeLogo') }}" style="display:none;">
             @csrf @method('DELETE')
         </form>
         @endif
+        <form id="resetBrandingForm" method="POST" action="{{ route('settings.branding.reset') }}" style="display:none;">
+            @csrf @method('DELETE')
+        </form>
 
         <style>
             .sidebar-style-option {

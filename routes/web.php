@@ -181,6 +181,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/settings/stages/{stage}', [SettingsController::class, 'destroyStage'])->name('settings.destroyStage');
         Route::post('/settings/branding', [SettingsController::class, 'updateBranding'])->name('settings.branding');
         Route::delete('/settings/branding/logo', [SettingsController::class, 'removeLogo'])->name('settings.branding.removeLogo');
+        Route::delete('/settings/branding', [SettingsController::class, 'resetBranding'])->name('settings.branding.reset');
 
         // Domain & Email settings
         Route::get('/settings/domain', [DomainController::class, 'index'])->name('settings.domain.index');

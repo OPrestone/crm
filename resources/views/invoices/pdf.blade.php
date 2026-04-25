@@ -37,7 +37,10 @@ td { padding: 8px; border-bottom: 1px solid #dee2e6; }
 <div style="display:flex; justify-content:space-between; margin-bottom:30px;">
     <div>
         <div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#6c757d;margin-bottom:5px;">Bill To</div>
-        @if($invoice->contact)<div style="font-weight:bold;">{{ $invoice->contact->full_name }}</div>@if($invoice->contact->email)<div>{{ $invoice->contact->email }}</div>@endif@endif
+        @if($invoice->contact)
+        <div style="font-weight:bold;">{{ $invoice->contact->full_name }}</div>
+        @if($invoice->contact->email)<div>{{ $invoice->contact->email }}</div>@endif
+        @endif
         @if($invoice->company && !$invoice->contact)<div style="font-weight:bold;">{{ $invoice->company->name }}</div>@endif
     </div>
     <div style="text-align:right;">

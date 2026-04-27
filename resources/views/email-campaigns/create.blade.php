@@ -37,7 +37,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-600">Email Body <span class="text-danger">*</span></label>
                         <textarea name="body" id="emailBody" class="form-control @error('body') is-invalid @enderror" rows="14" placeholder="Write your email content here...">{{ old('body') }}</textarea>
-                        <div class="form-text">You can use HTML or plain text. Use <code>{{first_name}}</code>, <code>{{last_name}}</code>, <code>{{email}}</code> as personalisation tokens.</div>
+                        <div class="form-text">You can use HTML or plain text. Use <code>@{{first_name}}</code>, <code>@{{last_name}}</code>, <code>@{{email}}</code> as personalisation tokens.</div>
                         @error('body')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
@@ -70,7 +70,7 @@
                 <div class="card-body">
                     <ul class="list-unstyled small text-muted mb-0">
                         <li class="mb-2"><i class="bi bi-lightbulb text-warning me-1"></i>Keep subject lines under 60 characters</li>
-                        <li class="mb-2"><i class="bi bi-lightbulb text-warning me-1"></i>Personalise with <code>{{first_name}}</code></li>
+                        <li class="mb-2"><i class="bi bi-lightbulb text-warning me-1"></i>Personalise with <code>@{{first_name}}</code></li>
                         <li class="mb-2"><i class="bi bi-lightbulb text-warning me-1"></i>Include a clear call-to-action</li>
                         <li><i class="bi bi-lightbulb text-warning me-1"></i>Test your campaign before sending</li>
                     </ul>

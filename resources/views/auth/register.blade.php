@@ -37,7 +37,7 @@
                 <div class="row g-3">
                     <div class="col-12">
                         <label class="form-label fw-600">Company / Organization Name <span class="text-danger">*</span></label>
-                        <input type="text" name="company_name" class="form-control @error('company_name') is-invalid @enderror" value="{{ old('company_name') }}" placeholder="Acme Inc." required autofocus>
+                        <input type="text" name="company_name" class="form-control @error('company_name') is-invalid @enderror" value="{{ old('company_name') }}" placeholder="prestech Inc." required autofocus>
                         @error('company_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-12">

@@ -11,8 +11,8 @@ class TaskSeeder extends Seeder
 {
     public function run(): void
     {
-        $tid   = Tenant::where('slug', 'acme-corp')->value('id');
-        $owner = User::where('email', 'demo@acme.com')->first();
+        $tid   = Tenant::where('slug', 'prestech-corp')->value('id');
+        $owner = User::where('email', 'demo@prestech.com')->first();
         $users = User::where('tenant_id', $tid)->get();
 
         // [title, type, priority, status, dueDays]

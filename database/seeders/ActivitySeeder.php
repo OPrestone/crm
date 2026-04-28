@@ -14,11 +14,11 @@ class ActivitySeeder extends Seeder
 {
     public function run(): void
     {
-        $tid      = Tenant::where('slug', 'acme-corp')->value('id');
-        $owner    = User::where('email', 'demo@acme.com')->first();
-        $manager  = User::where('email', 'manager@acme.com')->first();
-        $staff1   = User::where('email', 'staff@acme.com')->first();
-        $staff2   = User::where('email', 'emily@acme.com')->first();
+        $tid      = Tenant::where('slug', 'prestech-corp')->value('id');
+        $owner    = User::where('email', 'demo@prestech.com')->first();
+        $manager  = User::where('email', 'manager@prestech.com')->first();
+        $staff1   = User::where('email', 'staff@prestech.com')->first();
+        $staff2   = User::where('email', 'emily@prestech.com')->first();
         $contacts = Contact::where('tenant_id', $tid)->get();
         $leads    = Lead::where('tenant_id', $tid)->get();
         $deals    = Deal::where('tenant_id', $tid)->get();

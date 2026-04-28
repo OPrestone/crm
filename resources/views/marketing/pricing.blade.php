@@ -319,7 +319,7 @@
                             <div class="col-md-6">
                                 <label class="form-label fw-600">Company Name <span class="text-danger">*</span></label>
                                 <input type="text" name="company" class="form-control @error('company') is-invalid @enderror"
-                                       placeholder="Acme Inc." value="{{ old('company') }}" required>
+                                       placeholder="prestech Inc." value="{{ old('company') }}" required>
                                 @error('company')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="col-md-6">

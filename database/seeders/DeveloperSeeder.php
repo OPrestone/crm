@@ -12,13 +12,13 @@ class DeveloperSeeder extends Seeder
 {
     public function run(): void
     {
-        $tid   = Tenant::where('slug', 'acme-corp')->value('id');
-        $owner = User::where('email', 'demo@acme.com')->first();
+        $tid   = Tenant::where('slug', 'prestech-corp')->value('id');
+        $owner = User::where('email', 'demo@prestech.com')->first();
 
         $apps = [
             [
-                'name'           => 'Acme CRM Zapier Integration',
-                'description'    => 'Connects Acme CRM with Zapier to enable 5,000+ app automations. Used for lead capture from HubSpot forms.',
+                'name'           => 'prestech CRM Zapier Integration',
+                'description'    => 'Connects prestech CRM with Zapier to enable 5,000+ app automations. Used for lead capture from HubSpot forms.',
                 'client_id'      => Str::random(32),
                 'client_secret'  => Str::random(64),
                 'webhook_url'    => 'https://hooks.zapier.com/hooks/catch/1234567/abcdef/',

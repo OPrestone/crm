@@ -56,13 +56,13 @@
                 </button> -->
                 <button type="button"
                         class="demo-account-btn"
-                        onclick="fillDemo('demo@acme.com','password')">
+                        onclick="fillDemo('demo@prestech.com','password')">
                     <span class="demo-avatar demo-avatar-blue">
                         <i class="bi bi-building"></i>
                     </span>
                     <span class="demo-info">
-                        <span class="demo-role">Acme Corp</span>
-                        <span class="demo-email">demo@acme.com</span>
+                        <span class="demo-role">prestech Corp</span>
+                        <span class="demo-email">demo@prestech.com</span>
                     </span>
                     <span class="demo-badge demo-badge-blue">Tenant Admin</span>
                 </button>

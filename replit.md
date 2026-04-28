@@ -67,9 +67,9 @@ php artisan serve --host=0.0.0.0 --port=5000
 | Role         | Email                | Password |
 |--------------|----------------------|----------|
 | Super Admin  | admin@crm.io         | password |
-| Tenant Admin | demo@acme.com        | password |
-| Manager      | manager@acme.com     | password |
-| Staff        | staff@acme.com       | password |
+| Tenant Admin | demo@prestech.com        | password |
+| Manager      | manager@prestech.com     | password |
+| Staff        | staff@prestech.com       | password |
 
 ## Architecture
 
@@ -200,4 +200,4 @@ Execution order (each seeder queries DB for its dependencies, no shared state):
 | 25 | `DeveloperSeeder` | 3 developer API apps |
 | 26 | `PluginSeeder` | 27 plugins |
 
-Demo credentials: `admin@crm.io` / `password` (super_admin), `demo@acme.com` / `password` (enterprise tenant admin)
+Demo credentials: `admin@crm.io` / `password` (super_admin), `demo@prestech.com` / `password` (enterprise tenant admin)

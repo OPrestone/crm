@@ -10,7 +10,7 @@ class PipelineSeeder extends Seeder
 {
     public function run(): void
     {
-        $tid = Tenant::where('slug', 'acme-corp')->value('id');
+        $tid = Tenant::where('slug', 'prestech-corp')->value('id');
 
         $dealStages = [
             ['Prospecting',   '#6c757d', 1, false, false],

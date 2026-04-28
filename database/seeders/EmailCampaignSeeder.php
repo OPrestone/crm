@@ -13,9 +13,9 @@ class EmailCampaignSeeder extends Seeder
 {
     public function run(): void
     {
-        $tid      = Tenant::where('slug', 'acme-corp')->value('id');
-        $owner    = User::where('email', 'demo@acme.com')->first();
-        $manager  = User::where('email', 'manager@acme.com')->first();
+        $tid      = Tenant::where('slug', 'prestech-corp')->value('id');
+        $owner    = User::where('email', 'demo@prestech.com')->first();
+        $manager  = User::where('email', 'manager@prestech.com')->first();
         $contacts = Contact::where('tenant_id', $tid)->get();
 
         $body = '<h2>Hello {{first_name}},</h2><p>We have exciting news to share about our latest CRM updates.</p><p>Click below to learn more.</p><p>Best,<br>{{from_name}}</p>';
@@ -51,7 +51,7 @@ class EmailCampaignSeeder extends Seeder
             ],
             [
                 'name'       => 'Holiday Greetings 2025',
-                'subject'    => 'Season\'s Greetings from Acme Corporation',
+                'subject'    => 'Season\'s Greetings from prestech Corporation',
                 'status'     => 'draft',
                 'segment'    => 'all',
                 'scheduled'  => null,
@@ -74,8 +74,8 @@ class EmailCampaignSeeder extends Seeder
                 'tenant_id'    => $tid,
                 'name'         => $campaignData['name'],
                 'subject'      => $campaignData['subject'],
-                'from_name'    => 'Acme Corporation',
-                'from_email'   => 'marketing@acmecorp.com',
+                'from_name'    => 'prestech Corporation',
+                'from_email'   => 'marketing@prestechcorp.com',
                 'body'         => $body,
                 'status'       => $campaignData['status'],
                 'segment'      => $campaignData['segment'],

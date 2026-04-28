@@ -14,9 +14,9 @@ class ContractSeeder extends Seeder
 {
     public function run(): void
     {
-        $tid      = Tenant::where('slug', 'acme-corp')->value('id');
-        $owner    = User::where('email', 'demo@acme.com')->first();
-        $manager  = User::where('email', 'manager@acme.com')->first();
+        $tid      = Tenant::where('slug', 'prestech-corp')->value('id');
+        $owner    = User::where('email', 'demo@prestech.com')->first();
+        $manager  = User::where('email', 'manager@prestech.com')->first();
         $contacts = Contact::where('tenant_id', $tid)->get();
         $deals    = Deal::where('tenant_id', $tid)->get();
 
@@ -24,7 +24,7 @@ class ContractSeeder extends Seeder
         $msaTemplate = ContractTemplate::create([
             'tenant_id'  => $tid,
             'name'       => 'Master Service Agreement (MSA)',
-            'content'    => '<h2>Master Service Agreement</h2><p>This Master Service Agreement ("Agreement") is entered into as of {{start_date}} between {{company_name}} ("Client") and Acme Corporation ("Provider").</p><h3>1. Services</h3><p>Provider agrees to deliver the CRM platform services as described in the applicable Order Form. Services commence on {{start_date}} and continue through {{end_date}}.</p><h3>2. Payment Terms</h3><p>Client agrees to pay {{contract_value}} USD as set out in the Order Form. Payments are due Net 30.</p><h3>3. Confidentiality</h3><p>Both parties agree to keep proprietary information confidential.</p><p><em>Signed by: {{signed_by}}</em></p>',
+            'content'    => '<h2>Master Service Agreement</h2><p>This Master Service Agreement ("Agreement") is entered into as of {{start_date}} between {{company_name}} ("Client") and prestech Corporation ("Provider").</p><h3>1. Services</h3><p>Provider agrees to deliver the CRM platform services as described in the applicable Order Form. Services commence on {{start_date}} and continue through {{end_date}}.</p><h3>2. Payment Terms</h3><p>Client agrees to pay {{contract_value}} USD as set out in the Order Form. Payments are due Net 30.</p><h3>3. Confidentiality</h3><p>Both parties agree to keep proprietary information confidential.</p><p><em>Signed by: {{signed_by}}</em></p>',
             'variables'  => ['start_date', 'end_date', 'company_name', 'contract_value', 'signed_by'],
             'created_by' => $owner->id,
         ]);
@@ -32,7 +32,7 @@ class ContractSeeder extends Seeder
         $nsdaTemplate = ContractTemplate::create([
             'tenant_id'  => $tid,
             'name'       => 'Non-Disclosure Agreement (NDA)',
-            'content'    => '<h2>Non-Disclosure Agreement</h2><p>This NDA is entered into as of {{start_date}} between {{company_name}} and Acme Corporation.</p><h3>Obligations</h3><p>Both parties agree not to disclose confidential information to any third party without prior written consent.</p><p><em>Signed by: {{signed_by}}</em></p>',
+            'content'    => '<h2>Non-Disclosure Agreement</h2><p>This NDA is entered into as of {{start_date}} between {{company_name}} and prestech Corporation.</p><h3>Obligations</h3><p>Both parties agree not to disclose confidential information to any third party without prior written consent.</p><p><em>Signed by: {{signed_by}}</em></p>',
             'variables'  => ['start_date', 'company_name', 'signed_by'],
             'created_by' => $manager->id,
         ]);
@@ -40,7 +40,7 @@ class ContractSeeder extends Seeder
         $soaTemplate = ContractTemplate::create([
             'tenant_id'  => $tid,
             'name'       => 'Statement of Work (SOW)',
-            'content'    => '<h2>Statement of Work</h2><p>This SOW is attached to and governed by the MSA between {{company_name}} and Acme Corporation, effective {{start_date}}.</p><h3>Scope</h3><p>Acme Corporation will deliver the following: CRM implementation, data migration, and onboarding training, as agreed.</p><h3>Timeline</h3><p>Project is expected to complete by {{end_date}}.</p><h3>Value</h3><p>Total contract value: ${{contract_value}} USD.</p>',
+            'content'    => '<h2>Statement of Work</h2><p>This SOW is attached to and governed by the MSA between {{company_name}} and prestech Corporation, effective {{start_date}}.</p><h3>Scope</h3><p>prestech Corporation will deliver the following: CRM implementation, data migration, and onboarding training, as agreed.</p><h3>Timeline</h3><p>Project is expected to complete by {{end_date}}.</p><h3>Value</h3><p>Total contract value: ${{contract_value}} USD.</p>',
             'variables'  => ['start_date', 'end_date', 'company_name', 'contract_value'],
             'created_by' => $owner->id,
         ]);

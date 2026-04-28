@@ -33,13 +33,13 @@ class TenantSeeder extends Seeder
         ]);
         $superAdmin->assignRole('super_admin');
 
-        // ── Demo tenant: Acme Corporation ─────────────────────────────────
+        // ── Demo tenant: prestech Corporation ─────────────────────────────────
         $tenant = Tenant::create([
-            'name'         => 'Acme Corporation',
-            'slug'         => 'acme-corp',
-            'email'        => 'hello@acmecorp.com',
+            'name'         => 'prestech Corporation',
+            'slug'         => 'prestech-corp',
+            'email'        => 'hello@prestechcorp.com',
             'phone'        => '+1 415-555-0100',
-            'website'      => 'https://acmecorp.com',
+            'website'      => 'https://prestechcorp.com',
             'plan'         => 'enterprise',
             'status'       => 'active',
             'max_users'    => 20,
@@ -51,7 +51,7 @@ class TenantSeeder extends Seeder
 
         $owner = User::create([
             'name'      => 'John Smith',
-            'email'     => 'demo@acme.com',
+            'email'     => 'demo@prestech.com',
             'password'  => Hash::make('password'),
             'tenant_id' => $tid,
             'job_title' => 'CEO',
@@ -61,7 +61,7 @@ class TenantSeeder extends Seeder
 
         $manager = User::create([
             'name'      => 'Sarah Johnson',
-            'email'     => 'manager@acme.com',
+            'email'     => 'manager@prestech.com',
             'password'  => Hash::make('password'),
             'tenant_id' => $tid,
             'job_title' => 'Sales Manager',
@@ -71,7 +71,7 @@ class TenantSeeder extends Seeder
 
         $staff1 = User::create([
             'name'      => 'Michael Lee',
-            'email'     => 'staff@acme.com',
+            'email'     => 'staff@prestech.com',
             'password'  => Hash::make('password'),
             'tenant_id' => $tid,
             'job_title' => 'Account Executive',
@@ -81,7 +81,7 @@ class TenantSeeder extends Seeder
 
         $staff2 = User::create([
             'name'      => 'Emily Chen',
-            'email'     => 'emily@acme.com',
+            'email'     => 'emily@prestech.com',
             'password'  => Hash::make('password'),
             'tenant_id' => $tid,
             'job_title' => 'Business Development Rep',
@@ -91,14 +91,14 @@ class TenantSeeder extends Seeder
 
         // ── CRM Settings for demo tenant (key-value) ─────────────────────
         $settings = [
-            ['general', 'company_name',      'Acme Corporation'],
+            ['general', 'company_name',      'prestech Corporation'],
             ['general', 'currency',          'USD'],
             ['general', 'date_format',       'M j, Y'],
             ['general', 'timezone',          'America/Los_Angeles'],
             ['general', 'fiscal_year_start', '1'],
             ['general', 'language',          'en'],
-            ['email',   'from_name',         'Acme Corporation'],
-            ['email',   'from_email',        'hello@acmecorp.com'],
+            ['email',   'from_name',         'prestech Corporation'],
+            ['email',   'from_email',        'hello@prestechcorp.com'],
         ];
         foreach ($settings as [$group, $key, $value]) {
             CrmSetting::create(['tenant_id' => $tid, 'group' => $group, 'key' => $key, 'value' => $value]);

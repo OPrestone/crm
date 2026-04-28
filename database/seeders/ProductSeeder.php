@@ -11,8 +11,8 @@ class ProductSeeder extends Seeder
 {
     public function run(): void
     {
-        $tid   = Tenant::where('slug', 'acme-corp')->value('id');
-        $owner = User::where('email', 'demo@acme.com')->first();
+        $tid   = Tenant::where('slug', 'prestech-corp')->value('id');
+        $owner = User::where('email', 'demo@prestech.com')->first();
 
         // [name, sku, category, unit, unitPrice, costPrice, taxRate, description]
         $data = [

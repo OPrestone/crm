@@ -12,8 +12,8 @@ class WebFormSeeder extends Seeder
 {
     public function run(): void
     {
-        $tid   = Tenant::where('slug', 'acme-corp')->value('id');
-        $owner = User::where('email', 'demo@acme.com')->first();
+        $tid   = Tenant::where('slug', 'prestech-corp')->value('id');
+        $owner = User::where('email', 'demo@prestech.com')->first();
 
         $forms = [
             [
@@ -32,7 +32,7 @@ class WebFormSeeder extends Seeder
                     ['name' => 'message',    'label' => 'How can we help?', 'type' => 'textarea', 'required' => false],
                 ],
                 'submissions' => [
-                    ['first_name' => 'James', 'last_name' => 'Walker', 'email' => 'james.walker@acmeleads.com', 'company' => 'Walker & Sons', 'phone' => '+1 555-901-2345', 'message' => 'Interested in your enterprise plan.'],
+                    ['first_name' => 'James', 'last_name' => 'Walker', 'email' => 'james.walker@prestechleads.com', 'company' => 'Walker & Sons', 'phone' => '+1 555-901-2345', 'message' => 'Interested in your enterprise plan.'],
                     ['first_name' => 'Sophia', 'last_name' => 'Reed', 'email' => 'sophia@reedventures.com', 'company' => 'Reed Ventures', 'message' => 'Need a demo ASAP.'],
                     ['first_name' => 'Carlos', 'last_name' => 'Vega', 'email' => 'carlos.vega@techfirm.io', 'company' => 'TechFirm', 'phone' => '+1 555-234-5678', 'message' => 'Looking to switch from Salesforce.'],
                 ],
@@ -42,7 +42,7 @@ class WebFormSeeder extends Seeder
                 'description'     => 'Registration form for the CRM Best Practices webinar on Nov 15, 2025.',
                 'submit_action'   => 'lead',
                 'success_message' => 'You are registered! Check your email for the link.',
-                'redirect_url'    => 'https://acmecorp.com/webinar-confirmed',
+                'redirect_url'    => 'https://prestechcorp.com/webinar-confirmed',
                 'is_active'       => true,
                 'fields'          => [
                     ['name' => 'first_name', 'label' => 'First Name',    'type' => 'text',   'required' => true],

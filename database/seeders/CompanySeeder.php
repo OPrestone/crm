@@ -11,8 +11,8 @@ class CompanySeeder extends Seeder
 {
     public function run(): void
     {
-        $tid   = Tenant::where('slug', 'acme-corp')->value('id');
-        $owner = User::where('email', 'demo@acme.com')->first();
+        $tid   = Tenant::where('slug', 'prestech-corp')->value('id');
+        $owner = User::where('email', 'demo@prestech.com')->first();
 
         $data = [
             ['TechNova Inc',          'Technology',   'San Francisco', 'USA',     '1000-5000',  'contact@technova.io',           'https://technova.io',           12500000],

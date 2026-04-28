@@ -216,10 +216,10 @@
 <div class="card-body">
 <h6 class="fw-700 mb-3"><i class="bi bi-info-circle me-1 text-primary"></i>How Custom Domains Work</h6>
 <ol class="small text-muted ps-3 mb-3">
-    <li class="mb-2">Enter your desired domain (e.g. <code>crm.acme.com</code>)</li>
+    <li class="mb-2">Enter your desired domain (e.g. <code>crm.prestech.com</code>)</li>
     <li class="mb-2">Add the provided TXT record to your DNS provider (Cloudflare, GoDaddy, etc.)</li>
     <li class="mb-2">Click <strong>Verify DNS Now</strong> once the record has propagated</li>
-    <li class="mb-2">Also add a <strong>CNAME record</strong> pointing <code>crm.acme.com</code> → <code>{{ $appHost }}</code></li>
+    <li class="mb-2">Also add a <strong>CNAME record</strong> pointing <code>crm.prestech.com</code> → <code>{{ $appHost }}</code></li>
     <li>Your CRM is live at your custom domain!</li>
 </ol>
 <div class="alert alert-info py-2 small mb-0">

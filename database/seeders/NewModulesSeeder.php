@@ -21,7 +21,7 @@ class NewModulesSeeder extends Seeder
 {
     public function run(): void
     {
-        $user     = User::where('email', 'demo@acme.com')->first();
+        $user     = User::where('email', 'demo@prestech.com')->first();
         $tid      = $user->tenant_id;
         $contacts = Contact::where('tenant_id', $tid)->get();
         $deals    = Deal::where('tenant_id', $tid)->get();
@@ -31,9 +31,9 @@ class NewModulesSeeder extends Seeder
             'tenant_id'  => $tid,
             'name'       => 'Spring 2026 Promotion',
             'subject'    => 'Exclusive Spring Deals — 30% Off This Week Only',
-            'from_name'  => 'Acme Corporation',
-            'from_email' => 'hello@acmecorp.io',
-            'body'       => "Hi {{first_name}},\n\nSpring is here and we're celebrating with our biggest promotion!\n\nFor a limited time, enjoy 30% off all Pro and Enterprise plans.\n\nWhat's included:\n• Unlimited contacts & companies\n• Full API access\n• Dedicated onboarding support\n• Priority SLA\n\nOffer expires April 30, 2026.\n\nBest,\nThe Acme Team",
+            'from_name'  => 'prestech Corporation',
+            'from_email' => 'hello@prestechcorp.io',
+            'body'       => "Hi {{first_name}},\n\nSpring is here and we're celebrating with our biggest promotion!\n\nFor a limited time, enjoy 30% off all Pro and Enterprise plans.\n\nWhat's included:\n• Unlimited contacts & companies\n• Full API access\n• Dedicated onboarding support\n• Priority SLA\n\nOffer expires April 30, 2026.\n\nBest,\nThe prestech Team",
             'segment'    => 'all',
             'status'     => 'sent',
             'sent_at'    => now()->subDays(3),
@@ -52,10 +52,10 @@ class NewModulesSeeder extends Seeder
         $c2 = EmailCampaign::create([
             'tenant_id'  => $tid,
             'name'       => 'Product Update — Q2 2026',
-            'subject'    => "What's New in Acme CRM — Q2 2026 Release Notes",
-            'from_name'  => 'Acme Product Team',
-            'from_email' => 'product@acmecorp.io',
-            'body'       => "Hi {{first_name}},\n\nWe've shipped major updates this quarter!\n\n• Email Campaigns\n• Web Forms\n• Contract Management\n• Sales Forecasting\n\nLog in to explore these features.\n\nHappy selling,\nThe Acme Product Team",
+            'subject'    => "What's New in prestech CRM — Q2 2026 Release Notes",
+            'from_name'  => 'prestech Product Team',
+            'from_email' => 'product@prestechcorp.io',
+            'body'       => "Hi {{first_name}},\n\nWe've shipped major updates this quarter!\n\n• Email Campaigns\n• Web Forms\n• Contract Management\n• Sales Forecasting\n\nLog in to explore these features.\n\nHappy selling,\nThe prestech Product Team",
             'segment'    => 'all',
             'status'     => 'sent',
             'sent_at'    => now()->subDays(10),
@@ -75,9 +75,9 @@ class NewModulesSeeder extends Seeder
             'tenant_id'  => $tid,
             'name'       => 'Re-engagement Campaign',
             'subject'    => "We miss you! Here's what's changed since your last visit",
-            'from_name'  => 'Acme Corporation',
-            'from_email' => 'hello@acmecorp.io',
-            'body'       => "Hi {{first_name}},\n\nWe noticed you haven't logged in recently. A lot has changed!\n\nCome back and explore.\n\nBest,\nAcme Team",
+            'from_name'  => 'prestech Corporation',
+            'from_email' => 'hello@prestechcorp.io',
+            'body'       => "Hi {{first_name}},\n\nWe noticed you haven't logged in recently. A lot has changed!\n\nCome back and explore.\n\nBest,\nprestech Team",
             'segment'    => 'all',
             'status'     => 'draft',
             'created_by' => $user->id,

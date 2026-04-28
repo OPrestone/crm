@@ -13,9 +13,9 @@ class CardSeeder extends Seeder
 {
     public function run(): void
     {
-        $tid     = Tenant::where('slug', 'acme-corp')->value('id');
-        $owner   = User::where('email', 'demo@acme.com')->first();
-        $manager = User::where('email', 'manager@acme.com')->first();
+        $tid     = Tenant::where('slug', 'prestech-corp')->value('id');
+        $owner   = User::where('email', 'demo@prestech.com')->first();
+        $manager = User::where('email', 'manager@prestech.com')->first();
         $contacts = Contact::where('tenant_id', $tid)->get();
 
         // ══════════════════════════════════════════════════════════════════
